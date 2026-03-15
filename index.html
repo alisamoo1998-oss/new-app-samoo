@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SAMOO</title>
+<!-- إضافة مكتبة Font Awesome للأيقونات -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
     header{ background:#1a237e; color:white; padding:15px; text-align:center; font-weight:bold; }
@@ -16,10 +18,52 @@
     .addBtn{ background:#007bff; color:white; width:100%; }
     .statusBtn{ background:#ddd; margin: 2px; }
     .green{ background:#28a745 !important; color:white; }
-    .card{ background:white; padding:10px; margin-top:10px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.2); border-right: 5px solid #1a237e; }
+    .card{ background:white; padding:10px; margin-top:10px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.2); border-right: 5px solid #1a237e; position: relative; }
     .archiveToggle{ background:#444; color:white; width:100%; margin-top:10px; }
     .archive{ display:none; }
     .loading { text-align: center; color: #666; padding: 20px; }
+    
+    /* تنسيق أزرار التعديل والحذف */
+    .card-actions {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        gap: 5px;
+    }
+    
+    .edit-btn, .delete-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 4px;
+        transition: all 0.3s;
+        font-size: 16px;
+    }
+    
+    .edit-btn i {
+        color: #4CAF50;
+    }
+    
+    .delete-btn i {
+        color: #f44336;
+    }
+    
+    .edit-btn:hover {
+        background-color: rgba(76, 175, 80, 0.2);
+        transform: scale(1.1);
+    }
+    
+    .delete-btn:hover {
+        background-color: rgba(244, 67, 54, 0.2);
+        transform: scale(1.1);
+    }
+    
+    /* تنسيق محتوى البطاقة */
+    .card-content {
+        margin-left: 60px;
+    }
 </style>
 </head>
 <body>
@@ -111,6 +155,35 @@
         await updateDoc(ref, update);
     };
 
+    // دالة تعديل المخالفة
+    window.editInfraction = async (id, currentNom, currentPv, currentDate) => {
+        const newNom = prompt('تعديل اسم المخالف:', currentNom);
+        if (newNom === null) return;
+        
+        const newPv = prompt('تعديل رقم المحضر:', currentPv);
+        if (newPv === null) return;
+        
+        const newDate = prompt('تعديل التاريخ (YYYY-MM-DD):', currentDate);
+        if (newDate === null) return;
+        
+        if (newNom.trim() !== '' && newPv.trim() !== '' && newDate.trim() !== '') {
+            const ref = doc(db, "infractions", id);
+            await updateDoc(ref, { 
+                nom: newNom,
+                pv: newPv,
+                date: newDate
+            });
+        }
+    };
+
+    // دالة حذف المخالفة
+    window.deleteInfraction = async (id) => {
+        if (confirm('هل أنت متأكد من حذف هذه المخالفة؟')) {
+            const ref = doc(db, "infractions", id);
+            await deleteDoc(ref);
+        }
+    };
+
     onSnapshot(collection(db, "infractions"), (snapshot) => {
         let list = document.getElementById("infList");
         let arch = document.getElementById("infArchive");
@@ -125,12 +198,22 @@
             }
 
             let card = `<div class="card">
-                <b>${i.nom}</b><br>PV: ${i.pv}<br>${i.date}<br><br>
-                ${!i.archived ? `
-                <button class="statusBtn ${i.pay?'green':''}" onclick="toggleInfStatus('${id}','pay',${i.pay})">دفع</button>
-                <button class="statusBtn ${i.h1?'green':''}" onclick="toggleInfStatus('${id}','h1',${i.h1})">حجز1</button>
-                <button class="statusBtn ${i.h2?'green':''}" onclick="toggleInfStatus('${id}','h2',${i.h2})">حجز2</button>
-                ` : '<span style="color:green">✓ مؤرشف ومكتمل</span>'}
+                <div class="card-actions">
+                    <button class="edit-btn" onclick="editInfraction('${id}', '${i.nom}', '${i.pv}', '${i.date}')">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button class="delete-btn" onclick="deleteInfraction('${id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="card-content">
+                    <b>${i.nom}</b><br>PV: ${i.pv}<br>${i.date}<br><br>
+                    ${!i.archived ? `
+                    <button class="statusBtn ${i.pay?'green':''}" onclick="toggleInfStatus('${id}','pay',${i.pay})">دفع</button>
+                    <button class="statusBtn ${i.h1?'green':''}" onclick="toggleInfStatus('${id}','h1',${i.h1})">حجز1</button>
+                    <button class="statusBtn ${i.h2?'green':''}" onclick="toggleInfStatus('${id}','h2',${i.h2})">حجز2</button>
+                    ` : '<span style="color:green">✓ مؤرشف ومكتمل</span>'}
+                </div>
             </div>`;
             i.archived ? arch.innerHTML += card : list.innerHTML += card;
         });
@@ -152,6 +235,39 @@
         await updateDoc(doc(db, "pieces", id), { archived: true, deliverDate: new Date().toLocaleDateString() });
     };
 
+    // دالة تعديل القطعة
+    window.editPiece = async (id, currentType, currentName, currentNotes, currentRec) => {
+        const newType = prompt('تعديل نوع القطعة:', currentType);
+        if (newType === null) return;
+        
+        const newName = prompt('تعديل اسم القطعة:', currentName);
+        if (newName === null) return;
+        
+        const newNotes = prompt('تعديل الملاحظات:', currentNotes);
+        if (newNotes === null) return;
+        
+        const newRec = prompt('تعديل تاريخ الاستلام (YYYY-MM-DD):', currentRec);
+        if (newRec === null) return;
+        
+        if (newType.trim() !== '') {
+            const ref = doc(db, "pieces", id);
+            await updateDoc(ref, { 
+                type: newType,
+                name: newName,
+                notes: newNotes,
+                rec: newRec
+            });
+        }
+    };
+
+    // دالة حذف القطعة
+    window.deletePiece = async (id) => {
+        if (confirm('هل أنت متأكد من حذف هذه القطعة؟')) {
+            const ref = doc(db, "pieces", id);
+            await deleteDoc(ref);
+        }
+    };
+
     onSnapshot(collection(db, "pieces"), (snapshot) => {
         let list = document.getElementById("pieceList");
         let arch = document.getElementById("pieceArchive");
@@ -160,8 +276,18 @@
             let p = docSnap.data();
             let id = docSnap.id;
             let card = `<div class="card">
-                <b>${p.type}</b><br>${p.name}<br><small>${p.notes}</small><br>استلام: ${p.rec}
-                ${!p.archived ? `<br><button class="addBtn" onclick="deliverPiece('${id}')">تم التسليم</button>` : `<br><small>تم التسليم في: ${p.deliverDate}</small>`}
+                <div class="card-actions">
+                    <button class="edit-btn" onclick="editPiece('${id}', '${p.type}', '${p.name}', '${p.notes}', '${p.rec}')">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button class="delete-btn" onclick="deletePiece('${id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="card-content">
+                    <b>${p.type}</b><br>${p.name}<br><small>${p.notes}</small><br>استلام: ${p.rec}
+                    ${!p.archived ? `<br><button class="addBtn" onclick="deliverPiece('${id}')">تم التسليم</button>` : `<br><small>تم التسليم في: ${p.deliverDate}</small>`}
+                </div>
             </div>`;
             p.archived ? arch.innerHTML += card : list.innerHTML += card;
         });
@@ -173,7 +299,7 @@
         let start = new Date(document.getElementById("startDate").value);
         if(!isNaN(start.getTime())){
             start.setDate(start.getDate() + days);
-            document.getElementById("result").innerText = "الإجازة القادمة: " + start.toLocaleDateString();
+            document.getElementById("result").innerText = "الإجازة القادمة: " + start.toLocaleDateString('ar-EG');
         }
     };
 </script>
