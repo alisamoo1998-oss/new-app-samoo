@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>SAMOO</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f2f2f2;
+direction:rtl;
+}
+
+header{
+background:#222;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+nav{
+display:flex;
+justify-content:space-around;
+background:#333;
+}
+
+nav button{
+flex:1;
+padding:15px;
+border:none;
+background:#333;
+color:white;
+font-size:16px;
+}
+
+section{
+display:none;
+padding:15px;
+}
+
+.active{
+display:block;
+}
+
+input,select,textarea{
+width:100%;
+padding:10px;
+margin:5px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+padding:10px;
+margin-top:5px;
+border:none;
+border-radius:5px;
+}
+
+.addBtn{
+background:#007bff;
+color:white;
+width:100%;
+}
+
+.statusBtn{
+background:#ddd;
+}
+
+.green{
+background:#28a745 !important;
+color:white;
+}
+
+.card{
+background:white;
+padding:10px;
+margin-top:10px;
+border-radius:6px;
+box-shadow:0 2px 5px rgba(0,0,0,0.2);
+}
+
+.archiveToggle{
+background:#444;
+color:white;
+width:100%;
+margin-top:10px;
+}
+
+.archive{
+display:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>SAMOO</header>
+
+<nav>
+
+<button onclick="show('infractions')">Infractions</button>
+<button onclick="show('pieces')">Les Pièces</button>
+<button onclick="show('info')">Informations</button>
+
+</nav>
+
+<!-- INFRACTIONS -->
+
+<section id="infractions" class="active">
+
+<h3>إضافة مخالفة</h3>
+
+<input id="nom" placeholder="اسم المخالف">
+<input id="pv" placeholder="رقم المحضر">
+<input id="date" type="date">
+
+<button class="addBtn" onclick="addInfraction()">إضافة</button>
+
+<div id="infList"></div>
+
+<button class="archiveToggle" onclick="toggleArchive('infArchive')">
+عرض الأرشيف
+</button>
+
+<div id="infArchive" class="archive"></div>
+
+</section>
+
+<!-- INFORMATIONS -->
+
+<section id="info">
+
+<h3>حساب الإجازة</h3>
+
+<select id="leaveType">
+
+<option value="75">إجازة 75 يوم</option>
+<option value="90">إجازة 90 يوم</option>
+<option value="45">إجازة 45 يوم</option>
+
+</select>
+
+<input type="date" id="startDate">
+
+<button class="addBtn" onclick="calc()">احسب</button>
+
+<h2 id="result"></h2>
+
+</section>
+
+<!-- PIECES -->
+
+<section id="pieces">
+
+<h3>إضافة قطعة</h3>
+
+<input id="typePiece" placeholder="نوع القطعة">
+<input id="namePiece" placeholder="اسم القطعة">
+<textarea id="notesPiece" placeholder="ملاحظات"></textarea>
+<input id="dateRec" type="date">
+
+<button class="addBtn" onclick="addPiece()">إضافة</button>
+
+<div id="pieceList"></div>
+
+<button class="archiveToggle" onclick="toggleArchive('pieceArchive')">
+عرض الأرشيف
+</button>
+
+<div id="pieceArchive" class="archive"></div>
+
+</section>
+
+<script>
+
+/* navigation */
+
+function show(id){
+
+document.querySelectorAll("section").forEach(s=>s.classList.remove("active"))
+document.getElementById(id).classList.add("active")
+
+}
+
+/* INFRACTIONS */
+
+let infractions=JSON.parse(localStorage.getItem("infractions"))||[]
+let infArchive=JSON.parse(localStorage.getItem("infArchive"))||[]
+
+function saveInf(){
+
+localStorage.setItem("infractions",JSON.stringify(infractions))
+localStorage.setItem("infArchive",JSON.stringify(infArchive))
+
+}
+
+function addInfraction(){
+
+let nom=document.getElementById("nom").value
+let pv=document.getElementById("pv").value
+let date=document.getElementById("date").value
+
+let obj={nom,pv,date,pay:false,h1:false,h2:false}
+
+infractions.push(obj)
+
+document.getElementById("nom").value=""
+document.getElementById("pv").value=""
+document.getElementById("date").value=""
+
+renderInf()
+
+}
+
+function renderInf(){
+
+let div=document.getElementById("infList")
+div.innerHTML=""
+
+infractions.forEach((i,index)=>{
+
+let card=document.createElement("div")
+card.className="card"
+
+card.innerHTML=`
+
+<b>${i.nom}</b><br>
+PV: ${i.pv}<br>
+${i.date}
+
+<br><br>
+
+<button class="statusBtn ${i.pay?'green':''}" onclick="toggleInf(${index},'pay')">دفع</button>
+
+<button class="statusBtn ${i.h1?'green':''}" onclick="toggleInf(${index},'h1')">حجز1</button>
+
+<button class="statusBtn ${i.h2?'green':''}" onclick="toggleInf(${index},'h2')">حجز2</button>
+
+`
+
+div.appendChild(card)
+
+})
+
+renderInfArchive()
+
+saveInf()
+
+}
+
+function toggleInf(i,type){
+
+infractions[i][type]=!infractions[i][type]
+
+let inf=infractions[i]
+
+if(inf.pay && inf.h1 && inf.h2){
+
+infArchive.push(inf)
+infractions.splice(i,1)
+
+}
+
+renderInf()
+
+}
+
+function renderInfArchive(){
+
+let div=document.getElementById("infArchive")
+div.innerHTML=""
+
+infArchive.forEach(i=>{
+
+let c=document.createElement("div")
+c.className="card"
+
+c.innerHTML=`
+<b>${i.nom}</b><br>
+PV: ${i.pv}<br>
+${i.date}
+`
+
+div.appendChild(c)
+
+})
+
+}
+
+/* PIECES */
+
+let pieces=JSON.parse(localStorage.getItem("pieces"))||[]
+let pieceArchive=JSON.parse(localStorage.getItem("pieceArchive"))||[]
+
+function savePieces(){
+
+localStorage.setItem("pieces",JSON.stringify(pieces))
+localStorage.setItem("pieceArchive",JSON.stringify(pieceArchive))
+
+}
+
+function addPiece(){
+
+let type=document.getElementById("typePiece").value
+let name=document.getElementById("namePiece").value
+let notes=document.getElementById("notesPiece").value
+let rec=document.getElementById("dateRec").value
+
+let obj={type,name,notes,rec}
+
+pieces.push(obj)
+
+document.getElementById("typePiece").value=""
+document.getElementById("namePiece").value=""
+document.getElementById("notesPiece").value=""
+document.getElementById("dateRec").value=""
+
+renderPieces()
+
+}
+
+function renderPieces(){
+
+let div=document.getElementById("pieceList")
+div.innerHTML=""
+
+pieces.forEach((p,i)=>{
+
+let c=document.createElement("div")
+c.className="card"
+
+c.innerHTML=`
+
+<b>${p.type}</b><br>
+${p.name}<br>
+${p.notes}<br>
+استلام: ${p.rec}
+
+<br>
+
+<button onclick="deliver(${i})">تم التسليم</button>
+<button onclick="editPiece(${i})">تعديل</button>
+<button onclick="deletePiece(${i})">حذف</button>
+
+`
+
+div.appendChild(c)
+
+})
+
+renderPieceArchive()
+
+savePieces()
+
+}
+
+function deliver(i){
+
+let p=pieces[i]
+p.deliver=new Date().toLocaleDateString()
+
+pieceArchive.push(p)
+
+pieces.splice(i,1)
+
+renderPieces()
+
+}
+
+function editPiece(i){
+
+let n=prompt("تعديل الملاحظات",pieces[i].notes)
+
+if(n!==null){
+
+pieces[i].notes=n
+
+renderPieces()
+
+}
+
+}
+
+function deletePiece(i){
+
+pieces.splice(i,1)
+
+renderPieces()
+
+}
+
+function renderPieceArchive(){
+
+let div=document.getElementById("pieceArchive")
+div.innerHTML=""
+
+pieceArchive.forEach(p=>{
+
+let c=document.createElement("div")
+c.className="card"
+
+c.innerHTML=`
+
+<b>${p.type}</b><br>
+${p.name}<br>
+${p.notes}<br>
+استلام: ${p.rec}<br>
+تسليم: ${p.deliver}
+
+`
+
+div.appendChild(c)
+
+})
+
+}
+
+/* LEAVE */
+
+function calc(){
+
+let days=parseInt(document.getElementById("leaveType").value)
+
+let start=new Date(document.getElementById("startDate").value)
+
+start.setDate(start.getDate()+days)
+
+document.getElementById("result").innerText=
+"الإجازة القادمة: "+start.toLocaleDateString()
+
+}
+
+/* archive toggle */
+
+function toggleArchive(id){
+
+let el=document.getElementById(id)
+
+el.style.display=el.style.display==="block"?"none":"block"
+
+}
+
+/* init */
+
+renderInf()
+renderPieces()
+
+</script>
+
+</body>
+</html>
