@@ -10,59 +10,204 @@
     body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
     header{ background:#1a237e; color:white; padding:15px; text-align:center; font-weight:bold; }
     nav{ display:flex; justify-content:space-around; background:#333; }
-    nav button{ flex:1; padding:15px; border:none; background:#333; color:white; font-size:16px; cursor:pointer; }
+    nav button{ flex:1; padding:15px; border:none; background:#333; color:white; font-size:16px; cursor:pointer; transition:0.3s; }
+    nav button:hover{ background:#444; }
     section{ display:none; padding:15px; }
     .active{ display:block; }
-    input,select,textarea{ width:100%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:5px; box-sizing: border-box; }
-    button{ padding:10px; margin-top:5px; border:none; border-radius:5px; cursor:pointer; }
-    .addBtn{ background:#007bff; color:white; width:100%; }
-    .statusBtn{ background:#ddd; margin: 2px; }
-    .green{ background:#28a745 !important; color:white; }
-    .card{ background:white; padding:10px; margin-top:10px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.2); border-right: 5px solid #1a237e; position: relative; }
-    .archiveToggle{ background:#444; color:white; width:100%; margin-top:10px; }
-    .archive{ display:none; }
-    .loading { text-align: center; color: #666; padding: 20px; }
+    input,select,textarea{ width:100%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:5px; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+    button{ padding:10px; margin-top:5px; border:none; border-radius:5px; cursor:pointer; transition:0.3s; }
     
-    /* تنسيق أزرار التعديل والحذف */
-    .card-actions {
-        position: absolute;
-        top: 10px;
-        left: 10px;
+    /* تنسيق زر الإضافة الأخضر */
+    .add-main-btn {
+        background: #28a745;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 10px auto;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .add-main-btn:hover {
+        background: #218838;
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    
+    /* تنسيق حقل الإضافة المخفي */
+    .add-section {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: none;
+        animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .add-section.show {
+        display: block;
+    }
+    
+    .addBtn {
+        background: #007bff;
+        color: white;
+        width: 100%;
+    }
+    
+    .addBtn:hover {
+        background: #0056b3;
+    }
+    
+    /* تنسيق بطاقات المخالفات في سطر واحد */
+    .infractions-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .infraction-row {
+        background: white;
+        padding: 12px 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border-right: 4px solid #1a237e;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .infraction-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        flex: 1;
+    }
+    
+    .infraction-info span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+    }
+    
+    .infraction-info i {
+        color: #1a237e;
+        width: 20px;
+    }
+    
+    .infraction-actions {
         display: flex;
         gap: 5px;
     }
     
+    /* تنسيق أزرار الحالة */
+    .status-buttons {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .statusBtn {
+        padding: 5px 10px;
+        font-size: 12px;
+        background: #ddd;
+        margin: 0;
+    }
+    
+    .statusBtn.green {
+        background: #28a745;
+        color: white;
+    }
+    
+    /* تنسيق أزرار التعديل والحذف */
     .edit-btn, .delete-btn {
         background: none;
         border: none;
         cursor: pointer;
-        padding: 5px;
+        padding: 5px 8px;
         border-radius: 4px;
         transition: all 0.3s;
-        font-size: 16px;
     }
     
     .edit-btn i {
         color: #4CAF50;
+        font-size: 16px;
     }
     
     .delete-btn i {
         color: #f44336;
+        font-size: 16px;
     }
     
     .edit-btn:hover {
         background-color: rgba(76, 175, 80, 0.2);
-        transform: scale(1.1);
     }
     
     .delete-btn:hover {
         background-color: rgba(244, 67, 54, 0.2);
-        transform: scale(1.1);
     }
     
-    /* تنسيق محتوى البطاقة */
-    .card-content {
-        margin-left: 60px;
+    /* تنسيق بطاقات القطع */
+    .card {
+        background: white;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border-right: 4px solid #1a237e;
+        position: relative;
+    }
+    
+    .archiveToggle {
+        background: #444;
+        color: white;
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px;
+    }
+    
+    .archiveToggle:hover {
+        background: #555;
+    }
+    
+    .archive {
+        display: none;
+    }
+    
+    .loading {
+        text-align: center;
+        color: #666;
+        padding: 20px;
+    }
+    
+    /* تنسيق أرقام الإجازة */
+    #result {
+        font-family: 'Arial', sans-serif;
+        direction: ltr;
+        text-align: center;
+        font-size: 24px;
+        color: #1a237e;
     }
 </style>
 </head>
@@ -71,31 +216,65 @@
 <header>SAMOO</header>
 
 <nav>
-    <button onclick="show('infractions')">المخالفات</button>
-    <button onclick="show('pieces')">القطع</button>
-    <button onclick="show('info')">حساب الإجازة</button>
+    <button onclick="show('infractions')"><i class="fas fa-exclamation-triangle"></i> المخالفات</button>
+    <button onclick="show('pieces')"><i class="fas fa-tools"></i> القطع</button>
+    <button onclick="show('info')"><i class="fas fa-calculator"></i> حساب الإجازة</button>
 </nav>
 
 <section id="infractions" class="active">
-    <h3>إضافة مخالفة</h3>
-    <input id="nom" placeholder="اسم المخالف">
-    <input id="pv" placeholder="رقم المحضر">
-    <input id="date" type="date">
-    <button class="addBtn" onclick="addInfraction()">إضافة</button>
-    <div id="infList"><div class="loading">جاري مزامنة البيانات السحابية...</div></div>
-    <button class="archiveToggle" onclick="toggleArchive('infArchive')">عرض الأرشيف</button>
+    <h3>المخالفات</h3>
+    
+    <!-- زر الإضافة الأخضر -->
+    <button class="add-main-btn" onclick="toggleAddSection()">
+        <i class="fas fa-plus"></i>
+    </button>
+    
+    <!-- حقل الإضافة المخفي -->
+    <div id="addInfractionSection" class="add-section">
+        <h4>إضافة مخالفة جديدة</h4>
+        <input id="nom" placeholder="اسم المخالف">
+        <input id="pv" placeholder="رقم المحضر">
+        <input id="date" type="date">
+        <button class="addBtn" onclick="addInfraction()">
+            <i class="fas fa-save"></i> إضافة
+        </button>
+    </div>
+    
+    <div id="infList" class="infractions-container">
+        <div class="loading">جاري مزامنة البيانات السحابية...</div>
+    </div>
+    
+    <button class="archiveToggle" onclick="toggleArchive('infArchive')">
+        <i class="fas fa-archive"></i> عرض الأرشيف
+    </button>
     <div id="infArchive" class="archive"></div>
 </section>
 
 <section id="pieces">
-    <h3>إضافة قطعة</h3>
-    <input id="typePiece" placeholder="نوع القطعة">
-    <input id="namePiece" placeholder="اسم القطعة">
-    <textarea id="notesPiece" placeholder="ملاحظات"></textarea>
-    <input id="dateRec" type="date">
-    <button class="addBtn" onclick="addPiece()">إضافة قطعة</button>
+    <h3>القطع الإدارية</h3>
+    
+    <!-- زر الإضافة الأخضر للقطع -->
+    <button class="add-main-btn" onclick="togglePieceSection()">
+        <i class="fas fa-plus"></i>
+    </button>
+    
+    <!-- حقل إضافة القطع المخفي -->
+    <div id="addPieceSection" class="add-section">
+        <h4>إضافة قطعة جديدة</h4>
+        <input id="typePiece" placeholder="نوع القطعة">
+        <input id="namePiece" placeholder="اسم القطعة">
+        <textarea id="notesPiece" placeholder="ملاحظات" rows="2"></textarea>
+        <input id="dateRec" type="date">
+        <button class="addBtn" onclick="addPiece()">
+            <i class="fas fa-save"></i> إضافة قطعة
+        </button>
+    </div>
+    
     <div id="pieceList"></div>
-    <button class="archiveToggle" onclick="toggleArchive('pieceArchive')">عرض الأرشيف</button>
+    
+    <button class="archiveToggle" onclick="toggleArchive('pieceArchive')">
+        <i class="fas fa-archive"></i> عرض الأرشيف
+    </button>
     <div id="pieceArchive" class="archive"></div>
 </section>
 
@@ -107,7 +286,9 @@
         <option value="45">إجازة 45 يوم</option>
     </select>
     <input type="date" id="startDate">
-    <button class="addBtn" onclick="calc()">احسب</button>
+    <button class="addBtn" onclick="calc()">
+        <i class="fas fa-calculator"></i> احسب
+    </button>
     <h2 id="result" style="text-align:center;"></h2>
 </section>
 
@@ -127,6 +308,16 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // دالة لإظهار/إخفاء قسم إضافة المخالفات
+    window.toggleAddSection = () => {
+        document.getElementById('addInfractionSection').classList.toggle('show');
+    };
+    
+    // دالة لإظهار/إخفاء قسم إضافة القطع
+    window.togglePieceSection = () => {
+        document.getElementById('addPieceSection').classList.toggle('show');
+    };
+
     // الدوال الأساسية للواجهة
     window.show = (id) => {
         document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
@@ -145,7 +336,11 @@
         let date = document.getElementById("date").value;
         if(nom && pv) {
             await addDoc(collection(db, "infractions"), { nom, pv, date, pay: false, h1: false, h2: false, archived: false });
-            document.getElementById("nom").value = ""; document.getElementById("pv").value = "";
+            document.getElementById("nom").value = ""; 
+            document.getElementById("pv").value = "";
+            document.getElementById("date").value = "";
+            // إخفاء قسم الإضافة بعد الإضافة
+            document.getElementById('addInfractionSection').classList.remove('show');
         }
     };
 
@@ -187,7 +382,9 @@
     onSnapshot(collection(db, "infractions"), (snapshot) => {
         let list = document.getElementById("infList");
         let arch = document.getElementById("infArchive");
-        list.innerHTML = ""; arch.innerHTML = "";
+        list.innerHTML = ""; 
+        arch.innerHTML = "";
+        
         snapshot.forEach(docSnap => {
             let i = docSnap.data();
             let id = docSnap.id;
@@ -197,8 +394,30 @@
                 updateDoc(doc(db, "infractions", id), { archived: true });
             }
 
-            let card = `<div class="card">
-                <div class="card-actions">
+            let row = document.createElement('div');
+            row.className = 'infraction-row';
+            
+            let statusButtons = '';
+            if (!i.archived) {
+                statusButtons = `
+                    <div class="status-buttons">
+                        <button class="statusBtn ${i.pay ? 'green' : ''}" onclick="toggleInfStatus('${id}','pay',${i.pay})">دفع</button>
+                        <button class="statusBtn ${i.h1 ? 'green' : ''}" onclick="toggleInfStatus('${id}','h1',${i.h1})">حجز1</button>
+                        <button class="statusBtn ${i.h2 ? 'green' : ''}" onclick="toggleInfStatus('${id}','h2',${i.h2})">حجز2</button>
+                    </div>
+                `;
+            } else {
+                statusButtons = '<span style="color:green"><i class="fas fa-check-circle"></i> مكتمل</span>';
+            }
+            
+            row.innerHTML = `
+                <div class="infraction-info">
+                    <span><i class="fas fa-user"></i> ${i.nom}</span>
+                    <span><i class="fas fa-file-alt"></i> ${i.pv}</span>
+                    <span><i class="fas fa-calendar"></i> ${i.date}</span>
+                    ${statusButtons}
+                </div>
+                <div class="infraction-actions">
                     <button class="edit-btn" onclick="editInfraction('${id}', '${i.nom}', '${i.pv}', '${i.date}')">
                         <i class="fas fa-pen"></i>
                     </button>
@@ -206,16 +425,13 @@
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
-                <div class="card-content">
-                    <b>${i.nom}</b><br>PV: ${i.pv}<br>${i.date}<br><br>
-                    ${!i.archived ? `
-                    <button class="statusBtn ${i.pay?'green':''}" onclick="toggleInfStatus('${id}','pay',${i.pay})">دفع</button>
-                    <button class="statusBtn ${i.h1?'green':''}" onclick="toggleInfStatus('${id}','h1',${i.h1})">حجز1</button>
-                    <button class="statusBtn ${i.h2?'green':''}" onclick="toggleInfStatus('${id}','h2',${i.h2})">حجز2</button>
-                    ` : '<span style="color:green">✓ مؤرشف ومكتمل</span>'}
-                </div>
-            </div>`;
-            i.archived ? arch.innerHTML += card : list.innerHTML += card;
+            `;
+            
+            if (i.archived) {
+                arch.appendChild(row);
+            } else {
+                list.appendChild(row);
+            }
         });
     });
 
@@ -227,12 +443,17 @@
         let rec = document.getElementById("dateRec").value;
         if(type) {
             await addDoc(collection(db, "pieces"), { type, name, notes, rec, archived: false });
-            document.getElementById("typePiece").value = ""; document.getElementById("namePiece").value = "";
+            document.getElementById("typePiece").value = ""; 
+            document.getElementById("namePiece").value = "";
+            document.getElementById("notesPiece").value = "";
+            document.getElementById("dateRec").value = "";
+            // إخفاء قسم الإضافة بعد الإضافة
+            document.getElementById('addPieceSection').classList.remove('show');
         }
     };
 
     window.deliverPiece = async (id) => {
-        await updateDoc(doc(db, "pieces", id), { archived: true, deliverDate: new Date().toLocaleDateString() });
+        await updateDoc(doc(db, "pieces", id), { archived: true, deliverDate: new Date().toLocaleDateString('ar-EG') });
     };
 
     // دالة تعديل القطعة
@@ -271,12 +492,14 @@
     onSnapshot(collection(db, "pieces"), (snapshot) => {
         let list = document.getElementById("pieceList");
         let arch = document.getElementById("pieceArchive");
-        list.innerHTML = ""; arch.innerHTML = "";
+        list.innerHTML = ""; 
+        arch.innerHTML = "";
+        
         snapshot.forEach(docSnap => {
             let p = docSnap.data();
             let id = docSnap.id;
             let card = `<div class="card">
-                <div class="card-actions">
+                <div class="card-actions" style="position:absolute; top:10px; left:10px; display:flex; gap:5px;">
                     <button class="edit-btn" onclick="editPiece('${id}', '${p.type}', '${p.name}', '${p.notes}', '${p.rec}')">
                         <i class="fas fa-pen"></i>
                     </button>
@@ -284,22 +507,43 @@
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
-                <div class="card-content">
+                <div class="card-content" style="margin-left:60px;">
                     <b>${p.type}</b><br>${p.name}<br><small>${p.notes}</small><br>استلام: ${p.rec}
-                    ${!p.archived ? `<br><button class="addBtn" onclick="deliverPiece('${id}')">تم التسليم</button>` : `<br><small>تم التسليم في: ${p.deliverDate}</small>`}
+                    ${!p.archived ? `<br><button class="addBtn" style="margin-top:10px;" onclick="deliverPiece('${id}')">تم التسليم</button>` : `<br><small>تم التسليم في: ${p.deliverDate}</small>`}
                 </div>
             </div>`;
             p.archived ? arch.innerHTML += card : list.innerHTML += card;
         });
     });
 
-    // --- حساب الإجازات ---
+    // --- حساب الإجازات بالأرقام الفرنسية ---
     window.calc = () => {
         let days = parseInt(document.getElementById("leaveType").value);
         let start = new Date(document.getElementById("startDate").value);
         if(!isNaN(start.getTime())){
             start.setDate(start.getDate() + days);
-            document.getElementById("result").innerText = "الإجازة القادمة: " + start.toLocaleDateString('ar-EG');
+            
+            // تحويل التاريخ إلى أرقام فرنسية (غربية)
+            let year = start.getFullYear();
+            let month = (start.getMonth() + 1).toString().padStart(2, '0');
+            let day = start.getDate().toString().padStart(2, '0');
+            
+            // استخدام toLocaleDateString مع خيارات لعرض الأرقام الغربية
+            let options = { 
+                year: 'numeric', 
+                month: 'numeric', 
+                day: 'numeric',
+                numberingSystem: 'latn' // هذا يضمن الأرقام الغربية
+            };
+            
+            // طريقة بديلة لضمان الأرقام الغربية
+            let result = start.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).replace(/\//g, '-');
+            
+            document.getElementById("result").innerText = "الإجازة القادمة: " + result;
         }
     };
 </script>
