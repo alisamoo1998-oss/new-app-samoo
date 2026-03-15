@@ -3,19 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SAMOO</title>
+<title>SAMOO - نظام المخالفات</title>
 <!-- إضافة مكتبة Font Awesome للأيقونات -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
-    header{ background:#1a237e; color:white; padding:15px; text-align:center; font-weight:bold; }
+    header{ background:#1a237e; color:white; padding:15px; text-align:center; font-weight:bold; font-size:24px; }
     nav{ display:flex; justify-content:space-around; background:#333; }
     nav button{ flex:1; padding:15px; border:none; background:#333; color:white; font-size:16px; cursor:pointer; transition:0.3s; }
     nav button:hover{ background:#444; }
+    nav button i { margin-left: 5px; }
     section{ display:none; padding:15px; }
     .active{ display:block; }
     input,select,textarea{ width:100%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:5px; box-sizing: border-box; font-family: 'Arial', sans-serif; }
     button{ padding:10px; margin-top:5px; border:none; border-radius:5px; cursor:pointer; transition:0.3s; }
+    
+    /* تبويبات قسم المخالفات */
+    .infractions-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        background: white;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .tab-btn {
+        flex: 1;
+        padding: 12px;
+        background: #f0f0f0;
+        color: #333;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .tab-btn i {
+        font-size: 18px;
+    }
+    
+    .tab-btn.active {
+        background: #1a237e;
+        color: white;
+    }
+    
+    .tab-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
     
     /* تنسيق زر الإضافة الأخضر */
     .add-main-btn {
@@ -37,25 +93,30 @@
     
     .add-main-btn:hover {
         background: #218838;
-        transform: scale(1.1);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        transform: scale(1.1) rotate(90deg);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     
     /* تنسيق حقل الإضافة المخفي */
     .add-section {
         background: white;
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 15px 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         display: none;
         animation: slideDown 0.3s ease;
+        border: 2px solid #28a745;
+    }
+    
+    .add-section.show {
+        display: block;
     }
     
     @keyframes slideDown {
         from {
             opacity: 0;
-            transform: translateY(-20px);
+            transform: translateY(-30px);
         }
         to {
             opacity: 1;
@@ -63,39 +124,72 @@
         }
     }
     
-    .add-section.show {
-        display: block;
+    .add-section h4 {
+        color: #28a745;
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
     
-    .addBtn {
-        background: #007bff;
-        color: white;
+    .add-section h4 i {
+        font-size: 24px;
+    }
+    
+    /* تنسيق حقل التصنيف */
+    .classification-select {
         width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        margin: 10px 0;
+        cursor: pointer;
+        transition: all 0.3s;
     }
     
-    .addBtn:hover {
-        background: #0056b3;
+    .classification-select:hover {
+        border-color: #1a237e;
     }
     
-    /* تنسيق بطاقات المخالفات في سطر واحد */
+    .classification-select option {
+        padding: 10px;
+    }
+    
+    /* تنسيق بطاقات المخالفات */
     .infractions-container {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 5px;
     }
     
     .infraction-row {
         background: white;
         padding: 12px 15px;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        border-right: 4px solid #1a237e;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-right: 5px solid;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 10px;
+        transition: all 0.3s;
     }
+    
+    .infraction-row:hover {
+        transform: translateX(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .infraction-row.classification-جنحة { border-right-color: #dc3545; }
+    .infraction-row.classification-مخالفة { border-right-color: #ffc107; }
+    .infraction-row.classification-غرامة { border-right-color: #17a2b8; }
     
     .infraction-info {
         display: flex;
@@ -108,13 +202,24 @@
     .infraction-info span {
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 8px;
         font-size: 14px;
+        background: #f8f9fa;
+        padding: 5px 10px;
+        border-radius: 20px;
     }
     
     .infraction-info i {
-        color: #1a237e;
         width: 20px;
+    }
+    
+    .infraction-info .classification-badge {
+        background: #1a237e;
+        color: white;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: bold;
     }
     
     .infraction-actions {
@@ -133,6 +238,7 @@
         font-size: 12px;
         background: #ddd;
         margin: 0;
+        border-radius: 15px;
     }
     
     .statusBtn.green {
@@ -145,46 +251,169 @@
         background: none;
         border: none;
         cursor: pointer;
-        padding: 5px 8px;
-        border-radius: 4px;
+        padding: 8px 12px;
+        border-radius: 8px;
         transition: all 0.3s;
     }
     
     .edit-btn i {
         color: #4CAF50;
-        font-size: 16px;
+        font-size: 18px;
     }
     
     .delete-btn i {
         color: #f44336;
-        font-size: 16px;
+        font-size: 18px;
     }
     
     .edit-btn:hover {
-        background-color: rgba(76, 175, 80, 0.2);
+        background-color: rgba(76, 175, 80, 0.15);
+        transform: scale(1.1);
     }
     
     .delete-btn:hover {
-        background-color: rgba(244, 67, 54, 0.2);
+        background-color: rgba(244, 67, 54, 0.15);
+        transform: scale(1.1);
     }
     
-    /* تنسيق بطاقات القطع */
-    .card {
+    /* تنسيق قسم الإحصائيات */
+    .stats-container {
         background: white;
-        padding: 12px;
-        margin-top: 10px;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        border-right: 4px solid #1a237e;
-        position: relative;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
     
+    .date-range {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+    
+    .date-input {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .date-input label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: bold;
+    }
+    
+    .date-input input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+    
+    .stats-btn {
+        background: #1a237e;
+        color: white;
+        padding: 12px 30px;
+        font-size: 16px;
+        border-radius: 8px;
+        width: auto;
+        margin-top: 25px;
+    }
+    
+    .stats-btn:hover {
+        background: #0d1557;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 35, 126, 0.3);
+    }
+    
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 25px;
+        border-radius: 15px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        transition: all 0.3s;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+    
+    .stat-card:nth-child(1) { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .stat-card:nth-child(2) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .stat-card:nth-child(3) { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .stat-card:nth-child(4) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+    
+    .stat-card i {
+        font-size: 40px;
+        margin-bottom: 15px;
+        display: block;
+    }
+    
+    .stat-card .stat-number {
+        font-size: 48px;
+        font-weight: bold;
+        margin: 10px 0;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    .stat-card .stat-label {
+        font-size: 18px;
+        opacity: 0.9;
+    }
+    
+    .stats-details {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 30px;
+    }
+    
+    .stats-details h3 {
+        color: #333;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 16px;
+    }
+    
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+    
+    .detail-row .count {
+        font-weight: bold;
+        color: #1a237e;
+        font-size: 18px;
+    }
+    
+    /* تنسيق الأرشيف */
     .archiveToggle {
         background: #444;
         color: white;
         width: 100%;
-        margin-top: 15px;
-        padding: 12px;
+        margin-top: 20px;
+        padding: 15px;
+        font-size: 16px;
+        border-radius: 8px;
     }
     
     .archiveToggle:hover {
@@ -193,27 +422,37 @@
     
     .archive {
         display: none;
+        margin-top: 15px;
     }
     
     .loading {
         text-align: center;
         color: #666;
-        padding: 20px;
+        padding: 30px;
+        font-size: 18px;
     }
     
-    /* تنسيق أرقام الإجازة */
-    #result {
-        font-family: 'Arial', sans-serif;
-        direction: ltr;
-        text-align: center;
-        font-size: 24px;
-        color: #1a237e;
+    /* تنسيق responsive */
+    @media (max-width: 768px) {
+        .infraction-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .stats-cards {
+            grid-template-columns: 1fr;
+        }
+        
+        .date-range {
+            flex-direction: column;
+        }
     }
 </style>
 </head>
 <body>
 
-<header>SAMOO</header>
+<header><i class="fas fa-shield-alt"></i> ali SAMOO </header>
 
 <nav>
     <button onclick="show('infractions')"><i class="fas fa-exclamation-triangle"></i> المخالفات</button>
@@ -222,32 +461,120 @@
 </nav>
 
 <section id="infractions" class="active">
-    <h3>المخالفات</h3>
-    
-    <!-- زر الإضافة الأخضر -->
-    <button class="add-main-btn" onclick="toggleAddSection()">
-        <i class="fas fa-plus"></i>
-    </button>
-    
-    <!-- حقل الإضافة المخفي -->
-    <div id="addInfractionSection" class="add-section">
-        <h4>إضافة مخالفة جديدة</h4>
-        <input id="nom" placeholder="اسم المخالف">
-        <input id="pv" placeholder="رقم المحضر">
-        <input id="date" type="date">
-        <button class="addBtn" onclick="addInfraction()">
-            <i class="fas fa-save"></i> إضافة
+    <!-- تبويبات قسم المخالفات -->
+    <div class="infractions-tabs">
+        <button class="tab-btn active" onclick="switchInfractionTab('add')">
+            <i class="fas fa-plus-circle"></i> إضافة
+        </button>
+        <button class="tab-btn" onclick="switchInfractionTab('list')">
+            <i class="fas fa-list"></i> المخالفات
+        </button>
+        <button class="tab-btn" onclick="switchInfractionTab('archive')">
+            <i class="fas fa-archive"></i> الأرشيف
+        </button>
+        <button class="tab-btn" onclick="switchInfractionTab('stats')">
+            <i class="fas fa-chart-bar"></i> الإحصائيات
         </button>
     </div>
     
-    <div id="infList" class="infractions-container">
-        <div class="loading">جاري مزامنة البيانات السحابية...</div>
+    <!-- محتوى تبويب الإضافة -->
+    <div id="add-tab" class="tab-content active">
+        <h3><i class="fas fa-plus-circle"></i> إضافة مخالفة جديدة</h3>
+        
+        <!-- زر الإضافة الأخضر -->
+        <button class="add-main-btn" onclick="toggleAddSection()">
+            <i class="fas fa-plus"></i>
+        </button>
+        
+        <!-- حقل الإضافة المخفي -->
+        <div id="addInfractionSection" class="add-section">
+            <h4><i class="fas fa-car"></i> بيانات المخالفة</h4>
+            <input id="nom" placeholder="اسم المخالف">
+            <input id="pv" placeholder="رقم المحضر">
+            <input id="date" type="date">
+            
+            <!-- تصنيف المخالفة -->
+            <select id="classification" class="classification-select">
+                <option value="">اختر التصنيف</option>
+                <option value="جنحة">🚔 جنحة</option>
+                <option value="مخالفة">📋 مخالفة</option>
+                <option value="غرامة">💰 غرامة</option>
+            </select>
+            
+            <button class="addBtn" onclick="addInfraction()">
+                <i class="fas fa-save"></i> إضافة المخالفة
+            </button>
+        </div>
     </div>
     
-    <button class="archiveToggle" onclick="toggleArchive('infArchive')">
-        <i class="fas fa-archive"></i> عرض الأرشيف
-    </button>
-    <div id="infArchive" class="archive"></div>
+    <!-- محتوى تبويب المخالفات -->
+    <div id="list-tab" class="tab-content">
+        <h3><i class="fas fa-list"></i> قائمة المخالفات</h3>
+        <div id="infList" class="infractions-container">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري تحميل البيانات...</div>
+        </div>
+    </div>
+    
+    <!-- محتوى تبويب الأرشيف -->
+    <div id="archive-tab" class="tab-content">
+        <h3><i class="fas fa-archive"></i> أرشيف المخالفات</h3>
+        <button class="archiveToggle" onclick="toggleArchive('infArchive')">
+            <i class="fas fa-eye"></i> عرض/إخفاء الأرشيف
+        </button>
+        <div id="infArchive" class="archive"></div>
+    </div>
+    
+    <!-- محتوى تبويب الإحصائيات -->
+    <div id="stats-tab" class="tab-content">
+        <h3><i class="fas fa-chart-bar"></i> إحصائيات المخالفات</h3>
+        
+        <div class="stats-container">
+            <div class="date-range">
+                <div class="date-input">
+                    <label><i class="fas fa-calendar-alt"></i> من تاريخ:</label>
+                    <input type="date" id="statsFromDate">
+                </div>
+                <div class="date-input">
+                    <label><i class="fas fa-calendar-alt"></i> إلى تاريخ:</label>
+                    <input type="date" id="statsToDate">
+                </div>
+            </div>
+            
+            <button class="stats-btn" onclick="calculateStats()">
+                <i class="fas fa-calculator"></i> حساب الإحصائيات
+            </button>
+            
+            <!-- بطاقات الإحصائيات -->
+            <div id="statsCards" class="stats-cards">
+                <div class="stat-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="stat-number" id="totalInfractions">0</div>
+                    <div class="stat-label">إجمالي المخالفات</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-gavel"></i>
+                    <div class="stat-number" id="totalMisdemeanors">0</div>
+                    <div class="stat-label">الجنح</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-file-signature"></i>
+                    <div class="stat-number" id="totalViolations">0</div>
+                    <div class="stat-label">المخالفات</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <div class="stat-number" id="totalFines">0</div>
+                    <div class="stat-label">الغرامات</div>
+                </div>
+            </div>
+            
+            <!-- تفاصيل الإحصائيات -->
+            <div id="statsDetails" class="stats-details">
+                <h3><i class="fas fa-clock"></i> آخر 10 مخالفات في هذا النطاق</h3>
+                <div id="recentInfractionsList"></div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <section id="pieces">
@@ -294,7 +621,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBbj9zJK7QXwetU4wfM4DbZkurFSy_9v08",
@@ -307,6 +634,22 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+
+    // متغير لتخزين جميع المخالفات
+    let allInfractions = [];
+
+    // دالة التبديل بين تبويبات المخالفات
+    window.switchInfractionTab = (tabName) => {
+        // تحديث الأزرار
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // إخفاء كل المحتويات
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        // إظهار المحتوى المطلوب
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+    };
 
     // دالة لإظهار/إخفاء قسم إضافة المخالفات
     window.toggleAddSection = () => {
@@ -334,13 +677,34 @@
         let nom = document.getElementById("nom").value;
         let pv = document.getElementById("pv").value;
         let date = document.getElementById("date").value;
-        if(nom && pv) {
-            await addDoc(collection(db, "infractions"), { nom, pv, date, pay: false, h1: false, h2: false, archived: false });
+        let classification = document.getElementById("classification").value;
+        
+        if(nom && pv && date && classification) {
+            await addDoc(collection(db, "infractions"), { 
+                nom, 
+                pv, 
+                date, 
+                classification,
+                pay: false, 
+                h1: false, 
+                h2: false, 
+                archived: false,
+                createdAt: new Date().toISOString()
+            });
+            
+            // تفريغ الحقول
             document.getElementById("nom").value = ""; 
             document.getElementById("pv").value = "";
             document.getElementById("date").value = "";
+            document.getElementById("classification").value = "";
+            
             // إخفاء قسم الإضافة بعد الإضافة
             document.getElementById('addInfractionSection').classList.remove('show');
+            
+            // رسالة نجاح
+            alert('تم إضافة المخالفة بنجاح');
+        } else {
+            alert('الرجاء ملء جميع الحقول');
         }
     };
 
@@ -351,7 +715,7 @@
     };
 
     // دالة تعديل المخالفة
-    window.editInfraction = async (id, currentNom, currentPv, currentDate) => {
+    window.editInfraction = async (id, currentNom, currentPv, currentDate, currentClassification) => {
         const newNom = prompt('تعديل اسم المخالف:', currentNom);
         if (newNom === null) return;
         
@@ -361,12 +725,16 @@
         const newDate = prompt('تعديل التاريخ (YYYY-MM-DD):', currentDate);
         if (newDate === null) return;
         
-        if (newNom.trim() !== '' && newPv.trim() !== '' && newDate.trim() !== '') {
+        const newClassification = prompt('تعديل التصنيف (جنحة/مخالفة/غرامة):', currentClassification);
+        if (newClassification === null) return;
+        
+        if (newNom.trim() !== '' && newPv.trim() !== '' && newDate.trim() !== '' && newClassification.trim() !== '') {
             const ref = doc(db, "infractions", id);
             await updateDoc(ref, { 
                 nom: newNom,
                 pv: newPv,
-                date: newDate
+                date: newDate,
+                classification: newClassification
             });
         }
     };
@@ -379,15 +747,68 @@
         }
     };
 
-    onSnapshot(collection(db, "infractions"), (snapshot) => {
+    // دالة حساب الإحصائيات
+    window.calculateStats = () => {
+        const fromDate = document.getElementById('statsFromDate').value;
+        const toDate = document.getElementById('statsToDate').value;
+        
+        if (!fromDate || !toDate) {
+            alert('الرجاء اختيار تاريخ البداية والنهاية');
+            return;
+        }
+        
+        // تصفية المخالفات حسب التاريخ
+        const filteredInfractions = allInfractions.filter(inf => {
+            return inf.date >= fromDate && inf.date <= toDate && !inf.archived;
+        });
+        
+        // حساب الإحصائيات
+        const total = filteredInfractions.length;
+        const misdemeanors = filteredInfractions.filter(inf => inf.classification === 'جنحة').length;
+        const violations = filteredInfractions.filter(inf => inf.classification === 'مخالفة').length;
+        const fines = filteredInfractions.filter(inf => inf.classification === 'غرامة').length;
+        
+        // تحديث الأرقام في البطاقات
+        document.getElementById('totalInfractions').textContent = total;
+        document.getElementById('totalMisdemeanors').textContent = misdemeanors;
+        document.getElementById('totalViolations').textContent = violations;
+        document.getElementById('totalFines').textContent = fines;
+        
+        // عرض آخر 10 مخالفات
+        const recentInfractions = filteredInfractions.slice(-10).reverse();
+        const recentList = document.getElementById('recentInfractionsList');
+        
+        if (recentInfractions.length > 0) {
+            recentList.innerHTML = recentInfractions.map(inf => `
+                <div class="detail-row">
+                    <span>${inf.nom} - ${inf.pv}</span>
+                    <span class="count">${inf.date} (${inf.classification})</span>
+                </div>
+            `).join('');
+        } else {
+            recentList.innerHTML = '<div class="detail-row">لا توجد مخالفات في هذا النطاق</div>';
+        }
+    };
+
+    // الاستماع للتغييرات في المخالفات
+    const q = query(collection(db, "infractions"), orderBy("date", "desc"));
+    
+    onSnapshot(q, (snapshot) => {
         let list = document.getElementById("infList");
         let arch = document.getElementById("infArchive");
         list.innerHTML = ""; 
         arch.innerHTML = "";
         
+        // تخزين جميع المخالفات
+        allInfractions = [];
+        
         snapshot.forEach(docSnap => {
             let i = docSnap.data();
             let id = docSnap.id;
+            
+            // إضافة id للبيانات
+            i.id = id;
+            allInfractions.push(i);
             
             // التحقق من الأرشفة التلقائية (إذا اكتملت الشروط الثلاثة)
             if (i.pay && i.h1 && i.h2 && !i.archived) {
@@ -395,7 +816,7 @@
             }
 
             let row = document.createElement('div');
-            row.className = 'infraction-row';
+            row.className = `infraction-row classification-${i.classification || 'مخالفة'}`;
             
             let statusButtons = '';
             if (!i.archived) {
@@ -410,15 +831,23 @@
                 statusButtons = '<span style="color:green"><i class="fas fa-check-circle"></i> مكتمل</span>';
             }
             
+            // إضافة أيقونة حسب التصنيف
+            let classificationIcon = '';
+            if (i.classification === 'جنحة') classificationIcon = '🚔';
+            else if (i.classification === 'مخالفة') classificationIcon = '📋';
+            else if (i.classification === 'غرامة') classificationIcon = '💰';
+            else classificationIcon = '📌';
+            
             row.innerHTML = `
                 <div class="infraction-info">
                     <span><i class="fas fa-user"></i> ${i.nom}</span>
                     <span><i class="fas fa-file-alt"></i> ${i.pv}</span>
                     <span><i class="fas fa-calendar"></i> ${i.date}</span>
+                    <span class="classification-badge">${classificationIcon} ${i.classification || 'غير مصنف'}</span>
                     ${statusButtons}
                 </div>
                 <div class="infraction-actions">
-                    <button class="edit-btn" onclick="editInfraction('${id}', '${i.nom}', '${i.pv}', '${i.date}')">
+                    <button class="edit-btn" onclick="editInfraction('${id}', '${i.nom}', '${i.pv}', '${i.date}', '${i.classification}')">
                         <i class="fas fa-pen"></i>
                     </button>
                     <button class="delete-btn" onclick="deleteInfraction('${id}')">
@@ -523,20 +952,6 @@
         if(!isNaN(start.getTime())){
             start.setDate(start.getDate() + days);
             
-            // تحويل التاريخ إلى أرقام فرنسية (غربية)
-            let year = start.getFullYear();
-            let month = (start.getMonth() + 1).toString().padStart(2, '0');
-            let day = start.getDate().toString().padStart(2, '0');
-            
-            // استخدام toLocaleDateString مع خيارات لعرض الأرقام الغربية
-            let options = { 
-                year: 'numeric', 
-                month: 'numeric', 
-                day: 'numeric',
-                numberingSystem: 'latn' // هذا يضمن الأرقام الغربية
-            };
-            
-            // طريقة بديلة لضمان الأرقام الغربية
             let result = start.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
