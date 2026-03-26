@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
 <title>SAMOO - نظام المخالفات</title>
-<!-- إضافة مكتبة Font Awesome للأيقونات -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
@@ -349,11 +348,6 @@
         padding: 15px;
         margin-top: 15px;
     }
-
-    .detail-row i.fa-archive {
-    margin-right: 5px;
-    opacity: 0.7;
-}
     
     .stats-details h3 {
         color: #333;
@@ -433,6 +427,20 @@
         color: #1a237e;
         margin-top: 15px;
         font-family: 'Arial', sans-serif;
+    }
+    /* تنسيق أزرار التبديل في قسم الإجازة */
+    #info .tab-btn {
+        transition: all 0.3s;
+        font-size: 14px;
+        padding: 8px;
+    }
+    #info .tab-btn:hover {
+        opacity: 0.9;
+    }
+    /* أيقونة الأرشيف */
+    .detail-row i.fa-archive {
+        margin-right: 5px;
+        opacity: 0.7;
     }
 </style>
 </head>
@@ -587,16 +595,35 @@
 
 <section id="info">
     <h3>حساب الإجازة</h3>
-    <select id="leaveType">
-        <option value="75">إجازة 75 يوم</option>
-        <option value="90">إجازة 90 يوم</option>
-        <option value="45">إجازة 45 يوم</option>
-    </select>
-    <input type="date" id="startDate">
-    <button class="addBtn" onclick="calc()">
-        <i class="fas fa-calculator"></i> احسب
-    </button>
-    <h2 id="result"></h2>
+    
+    <!-- تبويب اختيار العملية -->
+    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+        <button id="calcTypeFuture" class="tab-btn" style="flex:1; background:#1a237e; color:white;" onclick="setCalcType('future')">إضافة أيام</button>
+        <button id="calcTypePast" class="tab-btn" style="flex:1; background:#ddd; color:#333;" onclick="setCalcType('past')">الأيام المنقضية</button>
+    </div>
+
+    <!-- قسم إضافة الأيام (الإجازة القادمة) -->
+    <div id="futureCalc" style="display: block;">
+        <select id="leaveType">
+            <option value="75">إجازة 75 يوم</option>
+            <option value="90">إجازة 90 يوم</option>
+            <option value="45">إجازة 45 يوم</option>
+        </select>
+        <input type="date" id="startDate">
+        <button class="addBtn" onclick="calcFuture()">
+            <i class="fas fa-calculator"></i> احسب التاريخ
+        </button>
+    </div>
+
+    <!-- قسم حساب الأيام المنقضية -->
+    <div id="pastCalc" style="display: none;">
+        <input type="date" id="pastDate" placeholder="اختر تاريخ قديم">
+        <button class="addBtn" onclick="calcDaysPassed()">
+            <i class="fas fa-clock"></i> احسب الأيام المنقضية
+        </button>
+    </div>
+
+    <h2 id="result" style="text-align:center; font-size:20px;"></h2>
 </section>
 
 <script type="module">
@@ -726,7 +753,7 @@
         }
     };
 
-    // دالة حساب الإحصائيات
+    // دالة حساب الإحصائيات (تشمل الأرشيف)
     window.calculateStats = () => {
         const fromDate = document.getElementById('statsFromDate').value;
         const toDate = document.getElementById('statsToDate').value;
@@ -736,7 +763,7 @@
             return;
         }
         
-        // تصفية المخالفات حسب التاريخ
+        // تصفية جميع المخالفات حسب التاريخ (بما في ذلك المؤرشفة)
         const filteredInfractions = allInfractions.filter(inf => {
             return inf.date >= fromDate && inf.date <= toDate;
         });
@@ -753,17 +780,20 @@
         document.getElementById('totalViolations').textContent = violations;
         document.getElementById('totalFines').textContent = fines;
         
-        // عرض آخر 10 مخالفات
+        // عرض آخر 10 مخالفات (من جميع المخالفات في هذا النطاق)
         const recentInfractions = filteredInfractions.slice(-10).reverse();
         const recentList = document.getElementById('recentInfractionsList');
         
         if (recentInfractions.length > 0) {
-            recentList.innerHTML = recentInfractions.map(inf => `
-                <div class="detail-row">
-                    <span>${inf.nom} - ${inf.pv}</span>
-                    <span class="count">${inf.date} (${inf.classification})</span>
-                </div>
-            `).join('');
+            recentList.innerHTML = recentInfractions.map(inf => {
+                const archiveIcon = inf.archived ? ' <i class="fas fa-archive" style="color:#666; font-size:10px;"></i>' : '';
+                return `
+                    <div class="detail-row">
+                        <span>${inf.nom} - ${inf.pv} ${archiveIcon}</span>
+                        <span class="count">${inf.date} (${inf.classification})</span>
+                    </div>
+                `;
+            }).join('');
         } else {
             recentList.innerHTML = '<div class="detail-row">لا توجد مخالفات في هذا النطاق</div>';
         }
@@ -924,20 +954,63 @@
         });
     });
 
-    // --- حساب الإجازات بالأرقام الفرنسية ---
-    window.calc = () => {
+    // --- دوال حساب الإجازة الجديدة ---
+    window.setCalcType = (type) => {
+        const futureDiv = document.getElementById('futureCalc');
+        const pastDiv = document.getElementById('pastCalc');
+        const futureBtn = document.getElementById('calcTypeFuture');
+        const pastBtn = document.getElementById('calcTypePast');
+
+        if (type === 'future') {
+            futureDiv.style.display = 'block';
+            pastDiv.style.display = 'none';
+            futureBtn.style.background = '#1a237e';
+            futureBtn.style.color = 'white';
+            pastBtn.style.background = '#ddd';
+            pastBtn.style.color = '#333';
+            document.getElementById('result').innerHTML = '';
+        } else {
+            futureDiv.style.display = 'none';
+            pastDiv.style.display = 'block';
+            pastBtn.style.background = '#1a237e';
+            pastBtn.style.color = 'white';
+            futureBtn.style.background = '#ddd';
+            futureBtn.style.color = '#333';
+            document.getElementById('result').innerHTML = '';
+        }
+    };
+
+    window.calcDaysPassed = () => {
+        const pastDateInput = document.getElementById('pastDate').value;
+        if (!pastDateInput) {
+            alert('الرجاء اختيار تاريخ قديم');
+            return;
+        }
+        const past = new Date(pastDateInput);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (past > today) {
+            alert('التاريخ المحدد في المستقبل، الرجاء اختيار تاريخ قديم');
+            return;
+        }
+
+        const diffTime = today - past;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        document.getElementById('result').innerHTML = `<span style="font-size:24px;">عدد الأيام المنقضية: <strong>${diffDays}</strong> يوم</span>`;
+    };
+
+    window.calcFuture = () => {
         let days = parseInt(document.getElementById("leaveType").value);
         let start = new Date(document.getElementById("startDate").value);
         if(!isNaN(start.getTime())){
             start.setDate(start.getDate() + days);
-            
             let result = start.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'
             }).replace(/\//g, '-');
-            
-            document.getElementById("result").innerText = "الإجازة القادمة: " + result;
+            document.getElementById("result").innerHTML = `<span style="font-size:20px;">الإجازة القادمة: <strong>${result}</strong></span>`;
         }
     };
 </script>
