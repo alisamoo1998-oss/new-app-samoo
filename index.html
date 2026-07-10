@@ -9,7 +9,25 @@
 </head>
 <body>
 
-<header><i class="fas fa-shield-alt"></i> SAMOO</header>
+<!-- شاشة تسجيل الدخول -->
+<div id="loginScreen" class="login-screen">
+    <div class="login-box">
+        <i class="fas fa-shield-alt login-icon"></i>
+        <h2>SAMOO</h2>
+        <input id="loginEmail" type="email" placeholder="البريد الإلكتروني" autocomplete="username">
+        <input id="loginPassword" type="password" placeholder="كلمة المرور" autocomplete="current-password">
+        <div id="loginError" class="login-error"></div>
+        <button id="loginBtn" class="addBtn" onclick="login()">دخول</button>
+    </div>
+</div>
+
+<!-- محتوى التطبيق الفعلي (مخفي حتى تسجيل الدخول) -->
+<div id="appContent" style="display:none;">
+
+<header>
+    <i class="fas fa-shield-alt"></i> SAMOO
+    <button onclick="logout()" class="logout-btn" title="تسجيل الخروج"><i class="fas fa-sign-out-alt"></i></button>
+</header>
 
 <nav>
     <button onclick="show('dashboard')" title="Dashboard"><i class="fas fa-chart-pie"></i></button>
@@ -235,7 +253,12 @@
     <h2 id="result" style="text-align:center; font-size:20px;"></h2>
 </section>
 
+
+</div>
+<!-- نهاية appContent -->
+
 <script type="module" src="js/firebase-config.js"></script>
+<script type="module" src="js/auth.js"></script>
 <script type="module" src="js/ui.js"></script>
 <script type="module" src="js/app.js"></script>
 <script type="module" src="js/dashboard.js"></script>
