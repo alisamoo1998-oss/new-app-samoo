@@ -554,3 +554,16 @@ body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
         margin-right: 5px;
         opacity: 0.7;
     }
+    /* ===== تنبيهات السجلات المتأخرة ===== */
+
+    /* غرامة تجاوزت 45 يومًا */
+    .expired-fine {
+    border: 2px solid #d32f2f !important;
+    background: #ffebee !important;
+    }
+
+    /* مخالفة أو جنحة تجاوزت 30 يومًا بدون تحرير */
+    .late-report {
+    border: 2px solid #f57c00 !important;
+    background: #fff3e0 !important;
+    }
