@@ -164,7 +164,7 @@ onSnapshot(q, (snapshot) => {
         if (!i.archived) {
             statusButtons = `
                     <div class="status-buttons">
-                        <button class="statusBtn ${i.pay ? "green" : ""}" onclick="toggleInfStatus('${id}','pay',${i.pay})">دفع</button>
+                        <button class="statusBtn ${i.pay ? "green" : ""}" onclick="toggleInfStatus('${id}','pay',${i.pay})">${i.classification === FINE ? "دفع" : "تحرير"}</button>          
                         <button class="statusBtn ${i.h1 ? "green" : ""}" onclick="toggleInfStatus('${id}','h1',${i.h1})">حجز1</button>
                         <button class="statusBtn ${i.h2 ? "green" : ""}" onclick="toggleInfStatus('${id}','h2',${i.h2})">حجز2</button>
                     </div>
