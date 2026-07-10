@@ -16,4 +16,4 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // تصدير المتغيرات للملفات الأخرى
-export { db, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy };
+export { app, db, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy };
