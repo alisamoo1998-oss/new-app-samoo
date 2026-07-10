@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<title>SAMOO - نظام المخالفات</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header><i class="fas fa-shield-alt"></i> SAMOO</header>
+
+<nav>
+    <button onclick="show('dashboard')" title="Dashboard"><i class="fas fa-chart-pie"></i></button>
+    <button onclick="show('infractions')"><i class="fas fa-exclamation-triangle"></i></button>
+    <button onclick="show('pieces')"><i class="fas fa-tools"></i></button>
+    <button onclick="show('info')"><i class="fas fa-calculator"></i></button>
+</nav>
+
+<section id="dashboard" class="active">
+    <div class="dashboard-header">
+        <h3><i class="fas fa-chart-pie"></i> Dashboard</h3>
+        <small id="dashboardMonth"></small>
+    </div>
+
+    <div class="dashboard-cards">
+        <div class="dashboard-card dashboard-card-violations">
+            <i class="fas fa-clipboard-list"></i>
+            <div class="dashboard-number" id="dashboardInfractions">0</div>
+            <div class="dashboard-label">المخالفات</div>
+        </div>
+        <div class="dashboard-card dashboard-card-misdemeanors">
+            <i class="fas fa-car-side"></i>
+            <div class="dashboard-number" id="dashboardMisdemeanors">0</div>
+            <div class="dashboard-label">الجنح</div>
+        </div>
+        <div class="dashboard-card dashboard-card-fines">
+            <i class="fas fa-coins"></i>
+            <div class="dashboard-number" id="dashboardFines">0</div>
+            <div class="dashboard-label">الغرامات</div>
+        </div>
+        <div class="dashboard-card dashboard-card-police">
+            <i class="fas fa-triangle-exclamation"></i>
+            <div class="dashboard-number" id="dashboardSpecialPolice">0</div>
+            <div class="dashboard-label">الشرطة الخاصة</div>
+        </div>
+        <div class="dashboard-card dashboard-card-total">
+            <i class="fas fa-chart-column"></i>
+            <div class="dashboard-number" id="dashboardTotal">0</div>
+            <div class="dashboard-label">المجموع</div>
+        </div>
+    </div>
+</section>
+
+<section id="infractions">
+    <!-- تبويبات قسم المخالفات - أيقونات فقط -->
+    <div class="infractions-tabs">
+        <button class="tab-btn active" onclick="switchInfractionTab('add')" title="إضافة">
+            <i class="fas fa-plus-circle"></i>
+        </button>
+        <button class="tab-btn" onclick="switchInfractionTab('list')" title="المخالفات">
+            <i class="fas fa-list"></i>
+        </button>
+        <button class="tab-btn" onclick="switchInfractionTab('archive')" title="الأرشيف">
+            <i class="fas fa-archive"></i>
+        </button>
+        <button class="tab-btn" onclick="switchInfractionTab('stats')" title="الإحصائيات">
+            <i class="fas fa-chart-bar"></i>
+        </button>
+    </div>
+    
+    <!-- محتوى تبويب الإضافة -->
+    <div id="add-tab" class="tab-content active">
+        <!-- زر الإضافة الأخضر -->
+        <button class="add-main-btn" onclick="toggleAddSection()">
+            <i class="fas fa-plus"></i>
+        </button>
+        
+        <!-- حقل الإضافة المخفي -->
+        <div id="addInfractionSection" class="add-section">
+            <h4><i class="fas fa-car"></i> إضافة مخالفة</h4>
+            <input id="nom" placeholder="اسم المخالف">
+            <input id="pv" placeholder="رقم المحضر">
+            <input id="date" type="date">
+            
+            <!-- تصنيف المخالفة -->
+            <select id="classification" class="classification-select" onchange="updateInfractionFields()">
+                <option value="">التصنيف</option>
+                <option value="جنحة">🚔 جنحة</option>
+                <option value="مخالفة">📋 مخالفة</option>
+                <option value="غرامة">💰 غرامة</option>
+            </select>
+
+            <div id="fineFields" class="conditional-fields">
+                <input id="fineType" placeholder="نوع الغرامة">
+                <input id="couponNumber" placeholder="رقم القسيمة">
+            </div>
+
+            <label id="specialPoliceField" class="checkbox-row">
+                <input id="specialPolice" type="checkbox">
+                <span>شرطة خاصة</span>
+            </label>
+            
+            <button class="addBtn" onclick="addInfraction()">
+                <i class="fas fa-save"></i> إضافة
+            </button>
+        </div>
+    </div>
+    
+    <!-- محتوى تبويب المخالفات -->
+    <div id="list-tab" class="tab-content">
+        <div id="infList" class="infractions-container">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+    </div>
+    
+    <!-- محتوى تبويب الأرشيف -->
+    <div id="archive-tab" class="tab-content">
+        <button class="archiveToggle" onclick="toggleArchive('infArchive')">
+            <i class="fas fa-eye"></i> عرض الأرشيف
+        </button>
+        <div id="infArchive" class="archive"></div>
+    </div>
+    
+    <!-- محتوى تبويب الإحصائيات -->
+    <div id="stats-tab" class="tab-content">
+        <div class="stats-container">
+            <div class="date-range">
+                <div class="date-input">
+                    <label><i class="fas fa-calendar-alt"></i> من:</label>
+                    <input type="date" id="statsFromDate">
+                </div>
+                <div class="date-input">
+                    <label><i class="fas fa-calendar-alt"></i> إلى:</label>
+                    <input type="date" id="statsToDate">
+                </div>
+            </div>
+            
+            <button class="stats-btn" onclick="calculateStats()">
+                <i class="fas fa-calculator"></i> احسب
+            </button>
+            
+            <!-- بطاقات الإحصائيات -->
+            <div id="statsCards" class="stats-cards">
+                <div class="stat-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="stat-number" id="totalInfractions">0</div>
+                    <div class="stat-label">الإجمالي</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-gavel"></i>
+                    <div class="stat-number" id="totalMisdemeanors">0</div>
+                    <div class="stat-label">الجنح</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-file-signature"></i>
+                    <div class="stat-number" id="totalViolations">0</div>
+                    <div class="stat-label">المخالفات</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <div class="stat-number" id="totalFines">0</div>
+                    <div class="stat-label">الغرامات</div>
+                </div>
+            </div>
+            
+            <!-- تفاصيل الإحصائيات -->
+            <div id="statsDetails" class="stats-details">
+                <h3><i class="fas fa-clock"></i> آخر المخالفات</h3>
+                <div id="recentInfractionsList"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="pieces">
+    <h3>القطع الإدارية</h3>
+    
+    <!-- زر الإضافة الأخضر للقطع -->
+    <button class="add-main-btn" onclick="togglePieceSection()">
+        <i class="fas fa-plus"></i>
+    </button>
+    
+    <!-- حقل إضافة القطع المخفي -->
+    <div id="addPieceSection" class="add-section">
+        <h4><i class="fas fa-tools"></i> إضافة قطعة</h4>
+        <input id="typePiece" placeholder="نوع القطعة">
+        <input id="namePiece" placeholder="اسم القطعة">
+        <textarea id="notesPiece" placeholder="ملاحظات" rows="2"></textarea>
+        <input id="dateRec" type="date">
+        <button class="addBtn" onclick="addPiece()">
+            <i class="fas fa-save"></i> إضافة
+        </button>
+    </div>
+    
+    <div id="pieceList"></div>
+    
+    <button class="archiveToggle" onclick="toggleArchive('pieceArchive')">
+        <i class="fas fa-archive"></i> عرض الأرشيف
+    </button>
+    <div id="pieceArchive" class="archive"></div>
+</section>
+
+<section id="info">
+    <h3>حساب الإجازة</h3>
+    
+    <!-- تبويب اختيار العملية -->
+    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+        <button id="calcTypeFuture" class="tab-btn" style="flex:1; background:#1a237e; color:white;" onclick="setCalcType('future')">إضافة أيام</button>
+        <button id="calcTypePast" class="tab-btn" style="flex:1; background:#ddd; color:#333;" onclick="setCalcType('past')">الأيام المنقضية</button>
+    </div>
+
+    <!-- قسم إضافة الأيام (الإجازة القادمة) -->
+    <div id="futureCalc" style="display: block;">
+        <select id="leaveType">
+            <option value="75">إجازة 75 يوم</option>
+            <option value="90">إجازة 90 يوم</option>
+            <option value="45">إجازة 45 يوم</option>
+        </select>
+        <input type="date" id="startDate">
+        <button class="addBtn" onclick="calcFuture()">
+            <i class="fas fa-calculator"></i> احسب التاريخ
+        </button>
+    </div>
+
+    <!-- قسم حساب الأيام المنقضية -->
+    <div id="pastCalc" style="display: none;">
+        <input type="date" id="pastDate" placeholder="اختر تاريخ قديم">
+        <button class="addBtn" onclick="calcDaysPassed()">
+            <i class="fas fa-clock"></i> احسب الأيام المنقضية
+        </button>
+    </div>
+
+    <h2 id="result" style="text-align:center; font-size:20px;"></h2>
+</section>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,531 @@
+    body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
+    header{ background:#1a237e; color:white; padding:15px; text-align:center; font-weight:bold; font-size:20px; }
+    nav{ display:flex; justify-content:space-around; background:#333; }
+    nav button{ flex:1; padding:12px; border:none; background:#333; color:white; font-size:14px; cursor:pointer; transition:0.3s; }
+    nav button:hover{ background:#444; }
+    nav button i { margin-left: 5px; }
+    section{ display:none; padding:10px; }
+    .active{ display:block; }
+    input,select,textarea{ width:100%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:5px; box-sizing: border-box; font-family: 'Arial', sans-serif; font-size:16px; }
+    button{ padding:10px; margin-top:5px; border:none; border-radius:5px; cursor:pointer; transition:0.3s; }
+
+    .dashboard-header {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 12px;
+    }
+
+    .dashboard-header h3 {
+        margin: 0 0 6px;
+        color: #1a237e;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .dashboard-header small {
+        color: #666;
+        font-size: 13px;
+    }
+
+    .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .dashboard-card {
+        color: white;
+        padding: 15px;
+        border-radius: 12px;
+        min-height: 105px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .dashboard-card i {
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .dashboard-number {
+        font-size: 28px;
+        font-weight: bold;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .dashboard-label {
+        font-size: 13px;
+        opacity: 0.95;
+    }
+
+    .dashboard-card-violations { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .dashboard-card-misdemeanors { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .dashboard-card-fines { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+    .dashboard-card-police { background: linear-gradient(135deg, #ff9a44 0%, #fc6076 100%); }
+    .dashboard-card-total {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        grid-column: 1 / -1;
+    }
+    
+    /* تبويبات قسم المخالفات - تصميم للهاتف */
+    .infractions-tabs {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 15px;
+        background: white;
+        padding: 8px;
+        border-radius: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    
+    .tab-btn {
+        flex: 1;
+        padding: 10px 5px;
+        background: transparent;
+        color: #666;
+        border: none;
+        border-radius: 20px;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .tab-btn i {
+        font-size: 20px;
+    }
+    
+    .tab-btn.active {
+        background: #1a237e;
+        color: white;
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(26, 35, 126, 0.3);
+    }
+    
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* تنسيق زر الإضافة الأخضر */
+    .add-main-btn {
+        background: #28a745;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 10px auto;
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .add-main-btn:hover {
+        background: #218838;
+        transform: scale(1.1) rotate(90deg);
+    }
+    
+    /* تنسيق حقل الإضافة المخفي */
+    .add-section {
+        background: white;
+        padding: 15px;
+        border-radius: 15px;
+        margin: 15px 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        display: none;
+        animation: slideDown 0.3s ease;
+        border: 2px solid #28a745;
+    }
+    
+    .add-section.show {
+        display: block;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .add-section h4 {
+        color: #28a745;
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .addBtn {
+        background: #007bff;
+        color: white;
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+    
+    /* تنسيق حقل التصنيف */
+    .classification-select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        margin: 10px 0;
+        cursor: pointer;
+    }
+
+    .conditional-fields {
+        display: none;
+    }
+
+    .conditional-fields.show {
+        display: block;
+    }
+
+    .checkbox-row {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 10px;
+        margin: 8px 0;
+        font-size: 14px;
+    }
+
+    .checkbox-row.show {
+        display: flex;
+    }
+
+    .checkbox-row input {
+        width: auto;
+        margin: 0;
+    }
+    
+    /* تنسيق بطاقات المخالفات للهاتف */
+    .infractions-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 60vh;
+        overflow-y: auto;
+        padding: 5px;
+    }
+    
+    .infraction-row {
+        background: white;
+        padding: 12px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-right: 5px solid;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: all 0.3s;
+    }
+    
+    .infraction-row.classification-جنحة { border-right-color: #dc3545; }
+    .infraction-row.classification-مخالفة { border-right-color: #ffc107; }
+    .infraction-row.classification-غرامة { border-right-color: #17a2b8; }
+    
+    .infraction-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    .infraction-info span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 13px;
+        background: #f8f9fa;
+        padding: 4px 8px;
+        border-radius: 15px;
+    }
+    
+    .infraction-info i {
+        width: 16px;
+        font-size: 12px;
+    }
+    
+    .infraction-info .classification-badge {
+        background: #1a237e;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+    
+    .infraction-actions {
+        display: flex;
+        gap: 5px;
+        justify-content: flex-end;
+        border-top: 1px solid #eee;
+        padding-top: 8px;
+    }
+    
+    /* تنسيق أزرار الحالة */
+    .status-buttons {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+    
+    .statusBtn {
+        padding: 4px 8px;
+        font-size: 11px;
+        background: #ddd;
+        margin: 0;
+        border-radius: 12px;
+    }
+    
+    .statusBtn.green {
+        background: #28a745;
+        color: white;
+    }
+    
+    /* تنسيق أزرار التعديل والحذف */
+    .edit-btn, .delete-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 6px;
+        transition: all 0.3s;
+    }
+    
+    .edit-btn i {
+        color: #4CAF50;
+        font-size: 16px;
+    }
+    
+    .delete-btn i {
+        color: #f44336;
+        font-size: 16px;
+    }
+    
+    .edit-btn:hover {
+        background-color: rgba(76, 175, 80, 0.15);
+    }
+    
+    .delete-btn:hover {
+        background-color: rgba(244, 67, 54, 0.15);
+    }
+    
+    /* تنسيق قسم الإحصائيات للهاتف */
+    .stats-container {
+        background: white;
+        border-radius: 15px;
+        padding: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .date-range {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .date-input label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .date-input input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+    
+    .stats-btn {
+        background: #1a237e;
+        color: white;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+        width: 100%;
+        margin: 15px 0;
+    }
+    
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin: 15px 0;
+    }
+    
+    .stat-card {
+        padding: 15px;
+        border-radius: 12px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    
+    .stat-card i {
+        font-size: 24px;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .stat-card .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 5px 0;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    .stat-card .stat-label {
+        font-size: 12px;
+        opacity: 0.9;
+    }
+    
+    .stat-card:nth-child(1) { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .stat-card:nth-child(2) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .stat-card:nth-child(3) { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .stat-card:nth-child(4) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+    
+    .stats-details {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .stats-details h3 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 13px;
+    }
+    
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+    
+    .detail-row .count {
+        font-weight: bold;
+        color: #1a237e;
+    }
+    
+    /* تنسيق الأرشيف */
+    .archiveToggle {
+        background: #444;
+        color: white;
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+    
+    .archive {
+        display: none;
+        margin-top: 10px;
+    }
+    
+    .loading {
+        text-align: center;
+        color: #666;
+        padding: 20px;
+    }
+    
+    /* تنسيق القطع */
+    .card {
+        background: white;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-right: 5px solid #1a237e;
+        position: relative;
+    }
+    
+    .card-actions {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        gap: 5px;
+    }
+    
+    .card-content {
+        margin-left: 50px;
+    }
+    
+    /* تنسيق حساب الإجازة */
+    #result {
+        text-align:center;
+        font-size:20px;
+        color: #1a237e;
+        margin-top: 15px;
+        font-family: 'Arial', sans-serif;
+    }
+    /* تنسيق أزرار التبديل في قسم الإجازة */
+    #info .tab-btn {
+        transition: all 0.3s;
+        font-size: 14px;
+        padding: 8px;
+    }
+    #info .tab-btn:hover {
+        opacity: 0.9;
+    }
+    /* أيقونة الأرشيف */
+    .detail-row i.fa-archive {
+        margin-right: 5px;
+        opacity: 0.7;
+    }
