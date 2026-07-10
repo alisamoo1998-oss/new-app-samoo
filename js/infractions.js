@@ -13,6 +13,33 @@ function addDays(dateValue, days) {
     return date.toISOString().slice(0, 10);
 }
 
+function isOverdue(dateValue, days) {
+    if (!dateValue) return false;
+
+    const today = new Date();
+    const target = new Date(dateValue);
+
+    target.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const diffDays = Math.floor((today - target) / (1000 * 60 * 60 * 24));
+
+    return diffDays >= days;
+}
+
+function isFineExpired(item) {
+    return item.classification === FINE &&
+           !item.pay &&
+           isOverdue(item.date, 45);
+}
+
+function isReportLate(item) {
+    return (item.classification === VIOLATION ||
+            item.classification === MISDEMEANOR) &&
+           !item.pay &&
+           isOverdue(item.date, 30);
+}
+
 function isFine(classification) {
     return classification === FINE;
 }
@@ -158,15 +185,24 @@ onSnapshot(q, (snapshot) => {
         }
 
         let row = document.createElement("div");
-        row.className = `infraction-row classification-${i.classification || VIOLATION}`;
+let rowClass = `infraction-row classification-${i.classification || VIOLATION}`;
 
+if (isFineExpired(i)) {
+    rowClass += " expired-fine";
+}
+
+if (isReportLate(i)) {
+    rowClass += " late-report";
+}
+
+row.className = rowClass;
         let statusButtons = "";
         if (!i.archived) {
             statusButtons = `
                     <div class="status-buttons">
-                        <button class="statusBtn ${i.pay ? "green" : ""}" onclick="toggleInfStatus('${id}','pay',${i.pay})">${i.classification === FINE ? "دفع" : "تحرير"}</button>          
-                        <button class="statusBtn ${i.h1 ? "green" : ""}" onclick="toggleInfStatus('${id}','h1',${i.h1})">حجز1</button>
-                        <button class="statusBtn ${i.h2 ? "green" : ""}" onclick="toggleInfStatus('${id}','h2',${i.h2})">حجز2</button>
+                                <button class="statusBtn ${i.pay ? "green" : ""}" onclick="toggleInfStatus('${id}','pay',${i.pay})">${i.classification === FINE ? "دفع" : "تحرير"}</button>          
+                                <button class="statusBtn ${i.h1 ? "green" : ""}" onclick="toggleInfStatus('${id}','h1',${i.h1})">حجز1</button>
+                                <button class="statusBtn ${i.h2 ? "green" : ""}" onclick="toggleInfStatus('${id}','h2',${i.h2})">حجز2</button>
                     </div>
                 `;
         } else {
