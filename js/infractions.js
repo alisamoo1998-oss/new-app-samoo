@@ -2,6 +2,7 @@ import { db, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, o
 
 // متغير لتخزين جميع المخالفات
 export let allInfractions = [];
+let searchText = "";
 
 const MISDEMEANOR = "جنحة";
 const VIOLATION = "مخالفة";
@@ -168,20 +169,56 @@ const q = query(collection(db, "infractions"), orderBy("date", "desc"));
 onSnapshot(q, (snapshot) => {
     let list = document.getElementById("infList");
     let arch = document.getElementById("infArchive");
+    let expiredFines = 0;
+    let lateReports = 0;
     list.innerHTML = "";
     arch.innerHTML = "";
 
     allInfractions = [];
 
-    snapshot.forEach(docSnap => {
+    snapshot.forEach(docSnap => { 
         let i = docSnap.data();
         let id = docSnap.id;
 
         i.id = id;
         allInfractions.push(i);
+        if (isFineExpired(i)) {
+        expiredFines++;
+        }
+
+        if (isReportLate(i)) {
+        lateReports++;
+}
 
         if (i.pay && i.h1 && i.h2 && !i.archived) {
             updateDoc(doc(db, "infractions", id), { archived: true });
+}
+ const alertsBox = document.getElementById("alertsBox");
+const alertsContent = document.getElementById("alertsContent");
+
+let html = "";
+
+if (expiredFines > 0) {
+    html += `
+    <div class="alert-item">
+        🔴 لديك ${expiredFines} غرامة متأخرة
+        <button class="alert-btn" onclick="showExpiredFines()">عرض</button>
+    </div>`;
+}
+
+if (lateReports > 0) {
+    html += `
+    <div class="alert-item">
+        🟠 لديك ${lateReports} مخالفة أو جنحة غير محررة
+        <button class="alert-btn" onclick="showLateReports()">عرض</button>
+    </div>`;
+}
+
+if (html === "") {
+    alertsBox.style.display = "none";
+} else {
+    alertsContent.innerHTML = html;
+    alertsBox.style.display = "block";
         }
 
         let row = document.createElement("div");
@@ -255,3 +292,42 @@ row.className = rowClass;
 });
 
 window.updateInfractionFields();
+let currentFilter = "all";
+
+window.showExpiredFines = function () {
+    currentFilter = "expiredFines";
+    show("infractions");
+    refreshInfractions();
+};
+
+window.showLateReports = function () {
+    currentFilter = "lateReports";
+    show("infractions");
+    refreshInfractions();
+};
+
+window.showAllInfractions = function () {
+    currentFilter = "all";
+    refreshInfractions();
+};
+window.filterInfractions = function () {
+
+    searchText = document
+        .getElementById("searchInput")
+        .value
+        .trim()
+        .toLowerCase();
+
+    document.querySelectorAll(".infraction-row").forEach(row => {
+
+        const text = row.innerText.toLowerCase();
+
+        if (text.includes(searchText)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+
+    });
+
+};
