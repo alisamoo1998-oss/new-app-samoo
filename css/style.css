@@ -1,5 +1,30 @@
-    body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
-    header{ background:#1a237e; color:white; padding:15px; text-align:center; font-weight:bold; font-size:20px; }
+body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
+    header{ background:#1a237e; color:white; padding:15px; text-align:center; font-weight:bold; font-size:20px; position:relative; }
+    .logout-btn{ position:absolute; left:15px; top:50%; transform:translateY(-50%); background:transparent; color:white; border:none; font-size:18px; padding:5px 10px; }
+
+    .login-screen{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        background:#1a237e;
+        padding:20px;
+        box-sizing:border-box;
+    }
+    .login-box{
+        background:white;
+        border-radius:14px;
+        padding:30px 25px;
+        width:100%;
+        max-width:340px;
+        text-align:center;
+        box-shadow:0 8px 24px rgba(0,0,0,0.25);
+    }
+    .login-icon{ font-size:40px; color:#1a237e; margin-bottom:10px; }
+    .login-box h2{ margin:0 0 20px; color:#1a237e; }
+    .login-box input{ text-align:right; }
+    .login-error{ color:#c62828; font-size:13px; min-height:18px; margin:5px 0; }
+    .login-box .addBtn{ width:100%; background:#1a237e; color:white; font-size:16px; }
     nav{ display:flex; justify-content:space-around; background:#333; }
     nav button{ flex:1; padding:12px; border:none; background:#333; color:white; font-size:14px; cursor:pointer; transition:0.3s; }
     nav button:hover{ background:#444; }
