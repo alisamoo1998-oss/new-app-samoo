@@ -6,6 +6,7 @@
 <title>SAMOO - نظام المخالفات</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/files.css">
 </head>
 <body>
 
@@ -32,7 +33,7 @@
 <nav>
     <button onclick="show('dashboard')" title="Dashboard"><i class="fas fa-chart-pie"></i></button>
     <button onclick="show('infractions')"><i class="fas fa-exclamation-triangle"></i></button>
-    <button onclick="show('pieces')"><i class="fas fa-tools"></i></button>
+    <button onclick="show('pieces')" title="إدارة الملفات"><i class="fas fa-folder-open"></i></button>                  
     <button onclick="show('info')"><i class="fas fa-calculator"></i></button>
 </nav>
 
@@ -203,32 +204,192 @@
     </div>
 </section>
 
-<section id="pieces">
-    <h3>القطع الإدارية</h3>
-    
-    <!-- زر الإضافة الأخضر للقطع -->
-    <button class="add-main-btn" onclick="togglePieceSection()">
-        <i class="fas fa-plus"></i>
-    </button>
-    
-    <!-- حقل إضافة القطع المخفي -->
-    <div id="addPieceSection" class="add-section">
-        <h4><i class="fas fa-tools"></i> إضافة قطعة</h4>
-        <input id="typePiece" placeholder="نوع القطعة">
-        <input id="namePiece" placeholder="اسم القطعة">
-        <textarea id="notesPiece" placeholder="ملاحظات" rows="2"></textarea>
-        <input id="dateRec" type="date">
-        <button class="addBtn" onclick="addPiece()">
-            <i class="fas fa-save"></i> إضافة
-        </button>
-    </div>
-    
-    <div id="pieceList"></div>
-    
-    <button class="archiveToggle" onclick="toggleArchive('pieceArchive')">
-        <i class="fas fa-archive"></i> عرض الأرشيف
-    </button>
-    <div id="pieceArchive" class="archive"></div>
+<section id="pieces" class="files-section">
+
+<div class="files-tabs">
+<button class="tab-btn active" onclick="showFilesTab('tabOpen',this)"><i class="fas fa-folder-open"></i></button>
+<button class="tab-btn" onclick="showFilesTab('tabArchive',this)"><i class="fas fa-box-archive"></i></button>
+<button class="tab-btn" onclick="showFilesTab('tabStats',this)"><i class="fas fa-chart-pie"></i></button>
+<button class="tab-btn" onclick="showFilesTab('tabAdd',this)"><i class="fas fa-plus-circle"></i></button>
+</div>
+
+<div id="tabOpen" class="filesTab">
+
+<div class="files-header">
+<h3><i class="fas fa-folder-open"></i> الملفات قيد المتابعة</h3>
+</div>
+
+<div class="search-box">
+<input id="fileSearch" placeholder="🔍 ابحث..." oninput="filterFiles()">
+</div>
+
+<div class="files-summary">
+<div class="summary-card waiting">
+<span id="openFilesCount">0</span>
+<small>قيد المتابعة</small>
+</div>
+
+<div class="summary-card archive">
+<span id="archiveFilesCount">0</span>
+<small>الأرشيف</small>
+</div>
+</div>
+
+<div id="filesList">
+<div class="loading">
+<i class="fas fa-folder-open"></i>
+لا توجد ملفات
+</div>
+</div>
+
+</div>
+
+<div id="tabArchive" class="filesTab" style="display:none">
+
+<div class="files-header">
+<h3><i class="fas fa-box-archive"></i> الأرشيف</h3>
+</div>
+
+<div id="filesArchive">
+<div class="loading">
+<i class="fas fa-box-open"></i>
+الأرشيف فارغ
+</div>
+</div>
+
+</div>
+
+<div id="tabStats" class="filesTab" style="display:none">
+
+<div class="files-header">
+<h3><i class="fas fa-chart-pie"></i> الإحصائيات</h3>
+</div>
+
+<div class="stats-cards">
+
+<div class="stat-card">
+<h3 id="statsOpenFiles">0</h3>
+<p>قيد المتابعة</p>
+</div>
+
+<div class="stat-card">
+<h3 id="statsArchivedFiles">0</h3>
+<p>الأرشيف</p>
+</div>
+
+<div class="stat-card">
+<h3 id="statsTotalFiles">0</h3>
+<p>الإجمالي</p>
+</div>
+
+</div>
+
+<table class="stats-table">
+<thead>
+<tr>
+<th>التصنيف</th>
+<th>العدد</th>
+</tr>
+</thead>
+<tbody id="statsTypes"></tbody>
+</table>
+
+</div>
+
+<div id="tabAdd" class="filesTab" style="display:none">
+
+<div class="files-header">
+<h3><i class="fas fa-folder-plus"></i> إضافة ملف</h3>
+
+<button class="new-file-btn" onclick="toggleFileForm()">
+<i class="fas fa-plus"></i>
+</button>
+
+</div>
+
+<div id="addFileSection" class="add-section" style="display:none">
+
+<input id="fileNumber" placeholder="رقم الملف">
+
+<input id="filePerson" placeholder="اسم الشخص">
+
+<input id="fileTitle" placeholder="عنوان الملف">
+
+<select id="fileType">
+<option value="">التصنيف</option>
+<option value="new">➕ إضافة تصنيف جديد</option>
+</select>
+
+<input id="newFileType" placeholder="اكتب التصنيف الجديد" style="display:none">
+
+<input id="receivedDate" type="date">
+
+<input id="receivedFrom" placeholder="استلمته من">
+
+<textarea id="fileNotes" rows="3" placeholder="ملاحظات"></textarea>
+
+<button class="addBtn" onclick="saveFile()">
+<i class="fas fa-save"></i>
+حفظ الملف
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="fileDetails">
+
+<div class="files-header">
+<button class="new-file-btn" onclick="show('pieces')">
+<i class="fas fa-arrow-right"></i>
+</button>
+<h3>تفاصيل الملف</h3>
+</div>
+
+<div class="file-info-card">
+<h2 id="detailsTitle">...</h2>
+<div id="fileInformation"></div>
+</div>
+
+<button class="add-main-btn" onclick="toggleActionForm()">
+<i class="fas fa-plus"></i>
+</button>
+
+<div id="actionForm" class="add-section">
+
+<h3>إضافة إجراء</h3>
+
+<input id="actionTitle" placeholder="عنوان الإجراء">
+
+<textarea id="actionNotes" placeholder="الملاحظات"></textarea>
+
+<input id="actionDate" type="date">
+
+<button class="addBtn" onclick="saveAction()">
+<i class="fas fa-save"></i>
+حفظ
+</button>
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress-header">
+<span id="progressText">0 / 0</span>
+</div>
+
+<div class="progress-bg">
+<div id="progressBar" class="progress-fill"></div>
+</div>
+
+</div>
+
+<h3 style="margin-top:25px">سجل الإجراءات</h3>
+
+<div id="actionsList"></div>
+
 </section>
 
 <section id="info">

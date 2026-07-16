@@ -509,29 +509,6 @@ body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
         padding: 20px;
     }
     
-    /* تنسيق القطع */
-    .card {
-        background: white;
-        padding: 12px;
-        margin-top: 10px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        border-right: 5px solid #1a237e;
-        position: relative;
-    }
-    
-    .card-actions {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        gap: 5px;
-    }
-    
-    .card-content {
-        margin-left: 50px;
-    }
-    
     /* تنسيق حساب الإجازة */
     #result {
         text-align:center;
