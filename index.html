@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/files.css">
+<link rel="stylesheet" href="css/leave.css">
 </head>
 <body>
 
@@ -392,37 +393,243 @@
 
 </section>
 
-<section id="info">
-    <h3>حساب الإجازة</h3>
-    
-    <!-- تبويب اختيار العملية -->
-    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-        <button id="calcTypeFuture" class="tab-btn" style="flex:1; background:#1a237e; color:white;" onclick="setCalcType('future')">إضافة أيام</button>
-        <button id="calcTypePast" class="tab-btn" style="flex:1; background:#ddd; color:#333;" onclick="setCalcType('past')">الأيام المنقضية</button>
-    </div>
+<section id="info" class="leave-section">
 
-    <!-- قسم إضافة الأيام (الإجازة القادمة) -->
-    <div id="futureCalc" style="display: block;">
-        <select id="leaveType">
-            <option value="75">إجازة 75 يوم</option>
-            <option value="90">إجازة 90 يوم</option>
-            <option value="45">إجازة 45 يوم</option>
-        </select>
-        <input type="date" id="startDate">
-        <button class="addBtn" onclick="calcFuture()">
-            <i class="fas fa-calculator"></i> احسب التاريخ
+    <!-- تبويبات فروع الإجازات -->
+    <div class="leave-tabs">
+        <button class="tab-btn active" onclick="switchLeaveTab('leaveCalc', this)" title="حاسبة الإجازة">
+            <i class="fas fa-calculator"></i>
+        </button>
+        <button class="tab-btn" onclick="switchLeaveTab('leaveArchive', this)" title="أرشيف الإجازات">
+            <i class="fas fa-calendar-alt"></i>
+        </button>
+        <button class="tab-btn" onclick="switchLeaveTab('leaveMissions', this)" title="المهام والتكليفات">
+            <i class="fas fa-route"></i>
+        </button>
+        <button class="tab-btn" onclick="switchLeaveTab('leaveMaintenance', this)" title="صيانة السيارة">
+            <i class="fas fa-oil-can"></i>
+        </button>
+        <button class="tab-btn" onclick="switchLeaveTab('leaveDuty', this)" title="جدول المناوبة">
+            <i class="fas fa-user-shield"></i>
         </button>
     </div>
 
-    <!-- قسم حساب الأيام المنقضية -->
-    <div id="pastCalc" style="display: none;">
-        <input type="date" id="pastDate" placeholder="اختر تاريخ قديم">
-        <button class="addBtn" onclick="calcDaysPassed()">
-            <i class="fas fa-clock"></i> احسب الأيام المنقضية
-        </button>
+    <!-- ==================== 1. حاسبة الإجازة ==================== -->
+    <div id="leaveCalc-tab" class="leave-tab-content active">
+        <h3><i class="fas fa-calculator"></i> حساب الإجازة</h3>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+            <button id="calcTypeFuture" class="tab-btn" style="flex:1; background:#1a237e; color:white;" onclick="setCalcType('future')">إضافة أيام</button>
+            <button id="calcTypePast" class="tab-btn" style="flex:1; background:#ddd; color:#333;" onclick="setCalcType('past')">الأيام المنقضية</button>
+            <button id="calcTypeRemaining" class="tab-btn" style="flex:1; background:#ddd; color:#333;" onclick="setCalcType('remaining')">بين تاريخين</button>
+        </div>
+
+        <!-- قسم إضافة الأيام (الإجازة القادمة) -->
+        <div id="futureCalc" style="display: block;">
+            <select id="leaveType" onchange="updateLeaveTypeField()">
+                <option value="45">إجازة 45 يوم</option>
+                <option value="75">إجازة 75 يوم</option>
+                <option value="90">إجازة 90 يوم</option>
+                <option value="custom">مدة مخصصة</option>
+            </select>
+            <div id="customDaysField" class="conditional-fields">
+                <input type="number" id="customDays" placeholder="عدد الأيام">
+            </div>
+            <input type="date" id="startDate">
+            <button class="addBtn" onclick="calcFuture()">
+                <i class="fas fa-calculator"></i> احسب التاريخ
+            </button>
+        </div>
+
+        <!-- قسم حساب الأيام المنقضية -->
+        <div id="pastCalc" style="display: none;">
+            <input type="date" id="pastDate" placeholder="اختر تاريخ قديم">
+            <button class="addBtn" onclick="calcDaysPassed()">
+                <i class="fas fa-clock"></i> احسب الأيام المنقضية
+            </button>
+        </div>
+
+        <!-- قسم حساب الفرق بين تاريخين (بدون أي قيود) -->
+        <div id="remainingCalc" style="display: none;">
+            <input type="date" id="rangeStartDate" placeholder="تاريخ البداية">
+            <input type="date" id="rangeEndDate" placeholder="تاريخ النهاية">
+            <button class="addBtn" onclick="calcDateRange()">
+                <i class="fas fa-calculator"></i> احسب الفرق بين التاريخين
+            </button>
+        </div>
+
+        <h2 id="result" style="text-align:center; font-size:20px;"></h2>
     </div>
 
-    <h2 id="result" style="text-align:center; font-size:20px;"></h2>
+    <!-- ==================== 2. أرشيف الإجازات ==================== -->
+    <div id="leaveArchive-tab" class="leave-tab-content">
+
+        <div class="files-header">
+            <h3><i class="fas fa-calendar-alt"></i> أرشيف الإجازات</h3>
+            <button class="new-file-btn" onclick="toggleLeaveEventForm()" title="إضافة حدث">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <div class="leave-legend">
+            <span><i class="fas fa-circle leave-dot-regular"></i> إجازة عادية</span>
+            <span><i class="fas fa-circle leave-dot-exceptional"></i> إجازة استثنائية</span>
+            <span><i class="fas fa-circle leave-dot-vacation"></i> عطلة سنوية</span>
+        </div>
+
+        <div id="leaveArchiveList">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+
+        <!-- نموذج إضافة / تعديل حدث إجازة -->
+        <div id="addLeaveEventSection" class="add-section">
+            <h4><i class="fas fa-plus"></i> إضافة حدث إجازة</h4>
+
+            <select id="leaveEventType" class="classification-select" onchange="updateLeaveEventFields()">
+                <option value="">اختر النوع</option>
+                <option value="regular">🔵 إجازة عادية</option>
+                <option value="exceptional">🟢 إجازة استثنائية</option>
+                <option value="vacation">🟠 عطلة سنوية</option>
+            </select>
+
+            <div id="regularEventFields" class="conditional-fields">
+                <input type="date" id="regStartDate" placeholder="تاريخ البداية">
+                <input type="date" id="regEndDate" placeholder="تاريخ النهاية">
+                <input type="date" id="regReturnDate" placeholder="تاريخ العودة">
+                <select id="regCycle">
+                    <option value="75">دورة 75 يوم</option>
+                    <option value="90">دورة 90 يوم</option>
+                </select>
+                <textarea id="regNotes" placeholder="ملاحظات (اختياري)"></textarea>
+            </div>
+
+            <div id="exceptionalEventFields" class="conditional-fields">
+                <input type="date" id="excDate" placeholder="التاريخ">
+                <select id="excType">
+                    <option value="مرض">مرض</option>
+                    <option value="وفاة">وفاة</option>
+                    <option value="مناسبة عائلية">مناسبة عائلية</option>
+                    <option value="مكافأة">مكافأة</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
+                <textarea id="excNotes" placeholder="ملاحظات (اختياري)"></textarea>
+            </div>
+
+            <div id="vacationEventFields" class="conditional-fields">
+                <input type="date" id="vacDate" placeholder="التاريخ">
+                <textarea id="vacNotes" placeholder="ملاحظات (اختياري)"></textarea>
+            </div>
+
+            <button class="addBtn" onclick="saveLeaveEvent()">
+                <i class="fas fa-save"></i> حفظ
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 3. المهام والتكليفات ==================== -->
+    <div id="leaveMissions-tab" class="leave-tab-content">
+
+        <div class="files-header">
+            <h3><i class="fas fa-route"></i> المهام والتكليفات</h3>
+            <button class="new-file-btn" onclick="toggleMissionForm()" title="إضافة">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <div id="addMissionSection" class="add-section">
+            <select id="missionKind" onchange="updateMissionFields()">
+                <option value="mission">مهمة</option>
+                <option value="assignment">تكليف</option>
+            </select>
+            <input type="date" id="missionDate">
+            <input id="missionTitle" placeholder="اسم المهمة أو المكان">
+            <textarea id="missionNotes" placeholder="ملاحظات (اختياري)"></textarea>
+            <button class="addBtn" onclick="saveMission()">
+                <i class="fas fa-save"></i> حفظ
+            </button>
+        </div>
+
+        <div id="missionsList" class="leave-list">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+    </div>
+
+    <!-- ==================== 4. صيانة السيارة ==================== -->
+    <div id="leaveMaintenance-tab" class="leave-tab-content">
+
+        <div class="files-header">
+            <h3><i class="fas fa-oil-can"></i> صيانة السيارة</h3>
+            <button class="new-file-btn" onclick="toggleMaintenanceForm()" title="إضافة">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <div id="addMaintenanceSection" class="add-section">
+            <input type="date" id="maintDate">
+            <input type="number" id="maintOdometer" placeholder="عداد السيارة (كم)">
+            <input id="maintType" placeholder="نوع الصيانة">
+            <input id="maintOilType" placeholder="نوع الزيت">
+            <input id="maintOilQty" placeholder="كمية الزيت">
+            <label class="checkbox-row show">
+                <input type="checkbox" id="maintFilter">
+                <span>تم تغيير الفلتر</span>
+            </label>
+            <input type="number" id="maintInterval" placeholder="الفاصل القادم (كم)">
+            <button class="addBtn" onclick="saveMaintenance()">
+                <i class="fas fa-save"></i> حفظ
+            </button>
+        </div>
+
+        <div id="maintenanceList" class="leave-list">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+    </div>
+
+    <!-- ==================== 5. جدول المناوبة ==================== -->
+    <div id="leaveDuty-tab" class="leave-tab-content">
+
+        <div class="files-header">
+            <h3><i class="fas fa-user-shield"></i> جدول المناوبة</h3>
+        </div>
+
+        <div class="duty-quick-buttons">
+            <button class="duty-btn duty-guard" onclick="quickDuty('حراسة')">
+                <i class="fas fa-shield-alt"></i> حراسة
+            </button>
+            <button class="duty-btn duty-security" onclick="quickDuty('خفارة')">
+                <i class="fas fa-user-shield"></i> خفارة
+            </button>
+            <button class="duty-btn duty-rest" onclick="quickDuty('راحة')">
+                <i class="fas fa-bed"></i> راحة
+            </button>
+        </div>
+
+        <button class="new-file-btn" onclick="toggleDutyForm()" style="margin:15px auto; display:block;" title="إدخال يدوي">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <div id="addDutySection" class="add-section">
+            <h4><i class="fas fa-pen"></i> إدخال يدوي</h4>
+            <input type="date" id="dutyDate">
+            <select id="dutyType">
+                <option value="حراسة">حراسة</option>
+                <option value="خفارة">خفارة</option>
+                <option value="راحة">راحة</option>
+            </select>
+            <textarea id="dutyNotes" placeholder="ملاحظات (اختياري)"></textarea>
+            <button class="addBtn" onclick="saveDutyManual()">
+                <i class="fas fa-save"></i> حفظ
+            </button>
+        </div>
+
+        <button class="archiveToggle" onclick="toggleArchive('dutyArchive')">
+            <i class="fas fa-eye"></i> عرض السجل
+        </button>
+        <div id="dutyArchive" class="archive">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+    </div>
+
 </section>
 
 
@@ -436,6 +643,10 @@
 <script type="module" src="js/dashboard.js"></script>
 <script type="module" src="js/infractions.js"></script>
 <script type="module" src="js/leave.js"></script>
+<script type="module" src="js/leaveArchive.js"></script>
+<script type="module" src="js/leaveMissions.js"></script>
+<script type="module" src="js/leaveMaintenance.js"></script>
+<script type="module" src="js/leaveDuty.js"></script>
 <script type="module" src="js/pieces.js"></script>
 <script type="module" src="js/statistics.js"></script>
 </body>

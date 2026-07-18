@@ -1,27 +1,29 @@
 // --- دوال حساب الإجازة الجديدة ---
+    // إظهار/إخفاء حقل المدة المخصصة
+    window.updateLeaveTypeField = () => {
+        const type = document.getElementById('leaveType').value;
+        document.getElementById('customDaysField').classList.toggle('show', type === 'custom');
+    };
+
     window.setCalcType = (type) => {
         const futureDiv = document.getElementById('futureCalc');
         const pastDiv = document.getElementById('pastCalc');
+        const remainingDiv = document.getElementById('remainingCalc');
         const futureBtn = document.getElementById('calcTypeFuture');
         const pastBtn = document.getElementById('calcTypePast');
+        const remainingBtn = document.getElementById('calcTypeRemaining');
 
-        if (type === 'future') {
-            futureDiv.style.display = 'block';
-            pastDiv.style.display = 'none';
-            futureBtn.style.background = '#1a237e';
-            futureBtn.style.color = 'white';
-            pastBtn.style.background = '#ddd';
-            pastBtn.style.color = '#333';
-            document.getElementById('result').innerHTML = '';
-        } else {
-            futureDiv.style.display = 'none';
-            pastDiv.style.display = 'block';
-            pastBtn.style.background = '#1a237e';
-            pastBtn.style.color = 'white';
-            futureBtn.style.background = '#ddd';
-            futureBtn.style.color = '#333';
-            document.getElementById('result').innerHTML = '';
-        }
+        const panels = { future: futureDiv, past: pastDiv, remaining: remainingDiv };
+        const buttons = { future: futureBtn, past: pastBtn, remaining: remainingBtn };
+
+        Object.keys(panels).forEach(key => {
+            const isActive = key === type;
+            panels[key].style.display = isActive ? 'block' : 'none';
+            buttons[key].style.background = isActive ? '#1a237e' : '#ddd';
+            buttons[key].style.color = isActive ? 'white' : '#333';
+        });
+
+        document.getElementById('result').innerHTML = '';
     };
 
     window.calcDaysPassed = () => {
@@ -44,16 +46,60 @@
         document.getElementById('result').innerHTML = `<span style="font-size:24px;">عدد الأيام المنقضية: <strong>${diffDays}</strong> يوم</span>`;
     };
 
-    window.calcFuture = () => {
-        let days = parseInt(document.getElementById("leaveType").value);
-        let start = new Date(document.getElementById("startDate").value);
-        if(!isNaN(start.getTime())){
-            start.setDate(start.getDate() + days);
-            let result = start.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            }).replace(/\//g, '-');
-            document.getElementById("result").innerHTML = `<span style="font-size:20px;">الإجازة القادمة: <strong>${result}</strong></span>`;
+    // حساب عدد الأيام بين تاريخين (بدون أي قيود على الترتيب أو المدة)
+    window.calcDateRange = () => {
+        const startInput = document.getElementById('rangeStartDate').value;
+        const endInput = document.getElementById('rangeEndDate').value;
+
+        if (!startInput || !endInput) {
+            alert('الرجاء اختيار تاريخ البداية والنهاية');
+            return;
         }
+
+        const start = new Date(startInput);
+        const end = new Date(endInput);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
+
+        const diffDays = Math.abs(Math.floor((end - start) / (1000 * 60 * 60 * 24)));
+
+        document.getElementById('result').innerHTML =
+            `<span style="font-size:20px;">عدد الأيام بين التاريخين: <strong>${diffDays}</strong> يوم</span>`;
+    };
+
+    window.calcFuture = () => {
+        const typeValue = document.getElementById("leaveType").value;
+        const days = typeValue === "custom"
+            ? parseInt(document.getElementById("customDays").value)
+            : parseInt(typeValue);
+
+        const startInput = document.getElementById("startDate").value;
+        let start = new Date(startInput);
+
+        if (!startInput || isNaN(start.getTime()) || isNaN(days) || days <= 0) {
+            alert('الرجاء اختيار تاريخ البداية والمدة بشكل صحيح');
+            return;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        start.setHours(0, 0, 0, 0);
+
+        let end = new Date(start);
+        end.setDate(end.getDate() + days);
+
+        let result = end.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).replace(/\//g, '-');
+
+        const elapsed = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+        const remaining = Math.floor((end - today) / (1000 * 60 * 60 * 24));
+
+        document.getElementById("result").innerHTML = `
+            <span style="font-size:20px;">الإجازة القادمة: <strong>${result}</strong></span><br>
+            <span style="font-size:15px;">الأيام المنقضية منذ البداية: <strong>${Math.max(elapsed, 0)}</strong> يوم</span><br>
+            <span style="font-size:15px;">الأيام المتبقية للإجازة: <strong>${Math.max(remaining, 0)}</strong> يوم</span>
+        `;
     };

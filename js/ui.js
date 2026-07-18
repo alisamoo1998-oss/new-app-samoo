@@ -11,6 +11,19 @@
         document.getElementById(`${tabName}-tab`).classList.add('active');
     };
 
+    // دالة التبديل بين تبويبات قسم الإجازات (الفروع الخمسة)
+    window.switchLeaveTab = (tabName, btn) => {
+        // تحديث الأزرار
+        document.querySelectorAll('.leave-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // إخفاء كل المحتويات
+        document.querySelectorAll('.leave-tab-content').forEach(content => content.classList.remove('active'));
+
+        // إظهار المحتوى المطلوب
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+    };
+
     // دالة لإظهار/إخفاء قسم إضافة المخالفات
     window.toggleAddSection = () => {
         document.getElementById('addInfractionSection').classList.toggle('show');
