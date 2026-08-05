@@ -471,25 +471,21 @@ filter:brightness(1.05);
 @media(max-width:700px){
 
 .file-info{
-
 grid-template-columns:1fr;
-
 }
 
 .files-summary{
-
 grid-template-columns:1fr;
-
 }
 
 .file-buttons{
-
 flex-direction:row;
-
+justify-content:center;
+align-items:center;
+gap:10px;
 }
 
 }
-
 /* ===========================================
    Animation
 =========================================== */
