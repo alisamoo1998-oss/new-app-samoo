@@ -312,8 +312,9 @@ display:flex;
 flex-direction:row;
 justify-content:center;
 align-items:center;
-gap:10px;
+gap:12px;
 width:100%;
+grid-column:1/-1;
 margin-top:15px;
 }
 
@@ -483,7 +484,7 @@ grid-template-columns:1fr;
 
 .file-buttons{
 
-flex-direction:column;
+flex-direction:row;
 
 }
 
