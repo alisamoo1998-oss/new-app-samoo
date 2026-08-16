@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/files.css">
 <link rel="stylesheet" href="css/leave.css">
+<link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 
@@ -28,8 +29,47 @@
 
 <header>
     <i class="fas fa-shield-alt"></i> SAMOO
-    <button onclick="logout()" class="logout-btn" title="تسجيل الخروج"><i class="fas fa-sign-out-alt"></i></button>
+    <div class="header-actions">
+        <button onclick="openSearchPanel()" class="icon-btn" title="البحث في Samoo"><i class="fas fa-search"></i></button>
+        <button onclick="toggleNotifPanel()" class="icon-btn" title="التنبيهات">
+            <i class="fas fa-bell"></i>
+            <span id="notifBadge" class="badge-dot"></span>
+        </button>
+        <button onclick="toggleTheme()" class="icon-btn" title="الوضع الليلي/النهاري"><i id="themeIcon" class="fas fa-moon"></i></button>
+        <button onclick="logout()" class="icon-btn logout-btn" title="تسجيل الخروج"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
 </header>
+
+<!-- نافذة البحث الشامل -->
+<div id="searchOverlay" class="samoo-overlay">
+    <div class="samoo-panel">
+        <div class="samoo-panel-header">
+            <h3><i class="fas fa-search"></i> البحث في Samoo</h3>
+            <button class="samoo-panel-close" onclick="closeSearchPanel()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="samoo-panel-body">
+            <input id="globalSearchInput" class="samoo-search-input" placeholder="ابحث بالاسم، رقم الملف، رقم المحضر..." oninput="runGlobalSearch()">
+            <div id="globalSearchResults">
+                <div class="samoo-empty"><i class="fas fa-search" style="font-size:28px;display:block;margin-bottom:10px;"></i>اكتب كلمة أو رقم للبحث</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- نافذة التنبيهات -->
+<div id="notifOverlay" class="samoo-overlay">
+    <div class="samoo-panel">
+        <div class="samoo-panel-header">
+            <h3><i class="fas fa-bell"></i> التنبيهات</h3>
+            <button class="samoo-panel-close" onclick="closeNotifPanel()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="samoo-panel-body">
+            <div id="notifPanelBody">
+                <div class="samoo-empty"><i class="fas fa-spinner fa-spin" style="font-size:28px;display:block;margin-bottom:10px;"></i>جاري التحميل...</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <nav>
     <button onclick="show('dashboard')" title="Dashboard"><i class="fas fa-chart-pie"></i></button>
@@ -49,27 +89,27 @@
     </div>
 
     <div class="dashboard-cards">
-        <div class="dashboard-card dashboard-card-violations">
+        <div class="dashboard-card dashboard-card-violations" onclick="show('infractions')">
             <i class="fas fa-clipboard-list"></i>
             <div class="dashboard-number" id="dashboardInfractions">0</div>
             <div class="dashboard-label">المخالفات</div>
         </div>
-        <div class="dashboard-card dashboard-card-misdemeanors">
+        <div class="dashboard-card dashboard-card-misdemeanors" onclick="show('infractions')">
             <i class="fas fa-car-side"></i>
             <div class="dashboard-number" id="dashboardMisdemeanors">0</div>
             <div class="dashboard-label">الجنح</div>
         </div>
-        <div class="dashboard-card dashboard-card-fines">
+        <div class="dashboard-card dashboard-card-fines" onclick="show('infractions')">
             <i class="fas fa-coins"></i>
             <div class="dashboard-number" id="dashboardFines">0</div>
             <div class="dashboard-label">الغرامات</div>
         </div>
-        <div class="dashboard-card dashboard-card-police">
+        <div class="dashboard-card dashboard-card-police" onclick="show('infractions')">
             <i class="fas fa-triangle-exclamation"></i>
             <div class="dashboard-number" id="dashboardSpecialPolice">0</div>
             <div class="dashboard-label">الشرطة الخاصة</div>
         </div>
-        <div class="dashboard-card dashboard-card-total">
+        <div class="dashboard-card dashboard-card-total" onclick="show('infractions')">
             <i class="fas fa-chart-column"></i>
             <div class="dashboard-number" id="dashboardTotal">0</div>
             <div class="dashboard-label">المجموع</div>
@@ -236,11 +276,15 @@
 </div>
 </div>
 
-<div id="filesList">
-<div class="loading">
-<i class="fas fa-folder-open"></i>
-لا توجد ملفات
+<div id="fileCategories" class="file-categories">
+<div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
 </div>
+
+<div id="filesListWrap" style="display:none;">
+<button class="back-to-categories" onclick="showAllCategories()">
+<i class="fas fa-arrow-right"></i> رجوع للتصنيفات
+</button>
+<div id="filesList"></div>
 </div>
 
 </div>
@@ -295,6 +339,11 @@
 <tbody id="statsTypes"></tbody>
 </table>
 
+<div class="file-info-card" style="margin-top:15px;">
+<h2><i class="fas fa-chart-bar"></i> توزيع الملفات حسب التصنيف</h2>
+<div id="statsChart" class="samoo-bar-chart"></div>
+</div>
+
 </div>
 
 <div id="tabAdd" class="filesTab" style="display:none">
@@ -310,12 +359,6 @@
 
 <div id="addFileSection" class="add-section" style="display:none">
 
-<input id="fileNumber" placeholder="رقم الملف">
-
-<input id="filePerson" placeholder="اسم الشخص">
-
-<input id="fileTitle" placeholder="عنوان الملف">
-
 <select id="fileType">
 <option value="">التصنيف</option>
 <option value="new">➕ إضافة تصنيف جديد</option>
@@ -323,9 +366,25 @@
 
 <input id="newFileType" placeholder="اكتب التصنيف الجديد" style="display:none">
 
-<input id="receivedDate" type="date">
+<input id="filePerson" placeholder="اسم الشخص">
 
+<input id="fileNumber" placeholder="رقم الملف">
+
+<!-- حقول خاصة بالاستدعاء -->
+<div id="summonsFields" class="conditional-fields">
+<select id="summonsCallType">
+<option value="استدعاء">استدعاء</option>
+<option value="استدعاء بأمر">استدعاء بأمر</option>
+</select>
+<input id="summonsPhone" placeholder="رقم الهاتف (اختياري)">
+</div>
+
+<!-- حقول الملف العادي -->
+<div id="genericFileFields" class="conditional-fields show">
+<input id="fileTitle" placeholder="عنوان الملف">
+<input id="receivedDate" type="date">
 <input id="receivedFrom" placeholder="استلمته من">
+</div>
 
 <textarea id="fileNotes" rows="3" placeholder="ملاحظات"></textarea>
 
@@ -636,6 +695,7 @@
 </div>
 <!-- نهاية appContent -->
 
+<script type="module" src="js/theme.js"></script>
 <script type="module" src="js/firebase-config.js"></script>
 <script type="module" src="js/auth.js"></script>
 <script type="module" src="js/ui.js"></script>
@@ -649,5 +709,7 @@
 <script type="module" src="js/leaveDuty.js"></script>
 <script type="module" src="js/pieces.js"></script>
 <script type="module" src="js/statistics.js"></script>
+<script type="module" src="js/notifications.js"></script>
+<script type="module" src="js/search.js"></script>
 </body>
 </html>
