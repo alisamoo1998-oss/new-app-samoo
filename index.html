@@ -28,15 +28,28 @@
 <div id="appContent" style="display:none;">
 
 <header>
-    <i class="fas fa-shield-alt"></i> SAMOO
+    <div class="brand">
+        <i class="fas fa-shield-alt"></i>
+        <span>SAMOO</span>
+    </div>
+
     <div class="header-actions">
-        <button onclick="openSearchPanel()" class="icon-btn" title="البحث في Samoo"><i class="fas fa-search"></i></button>
+        <button onclick="openSearchPanel()" class="icon-btn" title="البحث في Samoo">
+            <i class="fas fa-search"></i>
+        </button>
+
         <button onclick="toggleNotifPanel()" class="icon-btn" title="التنبيهات">
             <i class="fas fa-bell"></i>
             <span id="notifBadge" class="badge-dot"></span>
         </button>
-        <button onclick="toggleTheme()" class="icon-btn" title="الوضع الليلي/النهاري"><i id="themeIcon" class="fas fa-moon"></i></button>
-        <button onclick="logout()" class="icon-btn logout-btn" title="تسجيل الخروج"><i class="fas fa-sign-out-alt"></i></button>
+
+        <button onclick="toggleTheme()" class="icon-btn" title="الوضع الليلي/النهاري">
+            <i id="themeIcon" class="fas fa-moon"></i>
+        </button>
+
+        <button onclick="logout()" class="icon-btn logout-btn" title="تسجيل الخروج">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
     </div>
 </header>
 
