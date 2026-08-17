@@ -587,3 +587,36 @@ body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
     outline:none;
     border-color:#1976d2;
 }
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    direction: rtl;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 0;
+}
+
+.brand i {
+    font-size: 22px;
+}
+
+.brand span {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fa-bell {
+    color: #f4c430;
+}
