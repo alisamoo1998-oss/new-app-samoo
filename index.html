@@ -28,10 +28,12 @@
 <div id="appContent" style="display:none;">
 
 <header>
-    <div class="brand">
-        <i class="fas fa-shield-alt"></i>
-        <span>SAMOO</span>
-    </div>
+    
+  <div class="brand">
+    <!-- تم استبدال أيقونة الدرع بصورتك الشخصية -->
+    <img src="profile.png" alt="صورتي" class="user-avatar">
+    <span>SAMOO</span>
+  </div>
 
     <div class="header-actions">
         <button onclick="openSearchPanel()" class="icon-btn" title="البحث في Samoo">
@@ -724,5 +726,47 @@
 <script type="module" src="js/statistics.js"></script>
 <script type="module" src="js/notifications.js"></script>
 <script type="module" src="js/search.js"></script>
+
+
+
+
+<script>
+/* =========================================================
+   SAMOO — تحديث الأيقونة النشطة في شريط التنقل
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const navButtons = document.querySelectorAll("nav button");
+
+    navButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            /* إزالة النشاط من جميع الأزرار */
+            navButtons.forEach(function (btn) {
+                btn.classList.remove("active");
+            });
+
+            /* تفعيل الزر الذي تم الضغط عليه */
+            this.classList.add("active");
+
+        });
+
+    });
+
+    /* Dashboard هو القسم الافتراضي عند فتح التطبيق */
+    const dashboardButton = document.querySelector(
+        'nav button[onclick*="dashboard"]'
+    );
+
+    if (dashboardButton) {
+        dashboardButton.classList.add("active");
+    }
+
+});
+</script>
+
+
 </body>
 </html>

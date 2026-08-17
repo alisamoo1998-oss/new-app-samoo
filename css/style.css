@@ -1,7 +1,98 @@
-body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
-    header{ background:#1a237e; color:white; padding:15px; text-align:center; font-weight:bold; font-size:20px; position:relative; }
-    .logout-btn{ position:absolute; left:15px; top:50%; transform:translateY(-50%); background:transparent; color:white; border:none; font-size:18px; padding:5px 10px; }
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f2f2f2;
+    direction: rtl;
+}
 
+/* الأزرار العادية في التطبيق */
+button {
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+
+    direction: rtl;
+
+    background: #1a237e;
+    color: white;
+
+    padding: 8px 16px;
+    width: 100%;
+    min-height: 55px;
+
+    box-sizing: border-box;
+}
+
+/* الصورة والاسم */
+.brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px;
+
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+/* الأزرار */
+.header-actions {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    gap: 8px;
+
+    white-space: nowrap;
+    flex: 0 0 auto;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* أزرار الهيدر */
+.header-actions .icon-btn {
+    margin-top: 0 !important;
+
+    background: transparent;
+    border: none;
+    color: white;
+
+    font-size: 18px;
+
+    padding: 5px !important;
+
+    width: 35px;
+    height: 35px;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex: 0 0 35px;
+
+    position: relative;
+}
     .login-screen{
         display:flex;
         align-items:center;
@@ -32,7 +123,7 @@ body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
     section{ display:none; padding:10px; }
     .active{ display:block; }
     input,select,textarea{ width:100%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:5px; box-sizing: border-box; font-family: 'Arial', sans-serif; font-size:16px; }
-    button{ padding:10px; margin-top:5px; border:none; border-radius:5px; cursor:pointer; transition:0.3s; }
+    button {padding: 10px; margin-top: 5px; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s;}
 
     .dashboard-header {
         background: white;
@@ -588,35 +679,701 @@ body{ font-family:Arial; margin:0; background:#f2f2f2; direction:rtl; }
     border-color:#1976d2;
 }
 
-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    direction: rtl;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-right: 0;
-}
-
-.brand i {
-    font-size: 22px;
-}
-
 .brand span {
     font-size: 20px;
     font-weight: 700;
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
 .fa-bell {
     color: #f4c430;
+}
+
+
+/* ===== FIX HEADER - TEST ===== */
+
+header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    height: 55px !important;
+    min-height: 55px !important;
+    padding: 5px 15px !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+}
+
+header .brand {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+header .user-avatar {
+    width: 35px !important;
+    height: 35px !important;
+    margin: 0 !important;
+}
+
+header .header-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+header .header-actions .icon-btn {
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 35px !important;
+    height: 35px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    flex: 0 0 35px !important;
+}
+
+.logout-btn {
+    color: #f44336 !important;
+}
+
+.logout-btn:hover {
+    color: #ff6b6b !important;
+}
+
+.header-actions .icon-btn[onclick="toggleTheme()"] {
+    color: #ffd54f !important;
+}
+
+.header-actions .icon-btn[onclick="toggleTheme()"]:hover {
+    color: #ffeb3b !important;
+    transform: scale(1.12);
+}
+
+.header-actions .icon-btn[onclick="openSearchPanel()"] {
+    color: #64b5f6 !important;
+}
+
+.header-actions .icon-btn[onclick="openSearchPanel()"]:hover {
+    color: #90caf9 !important;
+    transform: scale(1.12);
+}
+
+.header-actions .icon-btn {
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+
+
+/* =========================================================
+   SAMOO — PREMIUM MOBILE HEADER
+   ========================================================= */
+
+header {
+    position: relative !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+
+    direction: rtl;
+
+    width: 100%;
+    height: 58px !important;
+    min-height: 58px !important;
+
+    padding: 6px 10px !important;
+    box-sizing: border-box !important;
+
+    background:
+        linear-gradient(
+            115deg,
+            #10184f 0%,
+            #1a237e 48%,
+            #111b59 100%
+        ) !important;
+
+    color: white;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 3px 14px rgba(0, 0, 0, 0.28);
+
+    z-index: 1000;
+}
+
+
+/* =========================================================
+   إضاءة خلفية ناعمة جدًا
+   ========================================================= */
+
+header::before {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    top: -120px;
+    right: 20%;
+
+    border-radius: 50%;
+
+    background: rgba(66, 165, 245, 0.10);
+
+    filter: blur(45px);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   خط إضاءة سفلي
+   ========================================================= */
+
+header::after {
+    content: "";
+
+    position: absolute;
+
+    left: 10%;
+    right: 10%;
+    bottom: 0;
+
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(100, 181, 246, 0.55),
+        rgba(255, 255, 255, 0.35),
+        rgba(100, 181, 246, 0.55),
+        transparent
+    );
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.brand {
+    position: relative;
+    z-index: 2;
+
+    display: flex !important;
+    align-items: center !important;
+
+    flex-direction: row !important;
+
+    gap: 8px;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    white-space: nowrap;
+
+    flex: 0 0 auto;
+}
+
+
+/* =========================================================
+   AVATAR
+   ========================================================= */
+
+.user-avatar {
+    width: 38px !important;
+    height: 38px !important;
+
+    flex: 0 0 38px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    display: block;
+
+    border: 2px solid rgba(255, 255, 255, 0.9);
+
+    animation: avatarPremium 4s ease-in-out infinite;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.4),
+        0 0 7px rgba(66, 165, 245, 0.25);
+}
+
+
+@keyframes avatarPremium {
+
+    0%, 100% {
+        border-color: rgba(255, 255, 255, 0.85);
+
+        box-shadow:
+            0 2px 8px rgba(0, 0, 0, 0.4),
+            0 0 6px rgba(66, 165, 245, 0.20);
+    }
+
+    50% {
+        border-color: #64b5f6;
+
+        box-shadow:
+            0 2px 8px rgba(0, 0, 0, 0.4),
+            0 0 14px rgba(66, 165, 245, 0.55);
+    }
+}
+
+
+/* =========================================================
+   SAMOO — ANIMATED LETTERS
+   ========================================================= */
+
+.brand span {
+    font-size: 19px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.4px;
+
+    white-space: nowrap;
+
+    background: linear-gradient(
+        110deg,
+
+        #ffffff 0%,
+        #ffffff 18%,
+
+        #90caf9 35%,
+        #42a5f5 48%,
+
+        #e3f6ff 58%,
+
+        #64b5f6 72%,
+
+        #ffffff 90%
+    );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    background-clip: text;
+
+    animation: samooTextFlow 5s ease-in-out infinite;
+
+    filter:
+        drop-shadow(
+            0 0 5px rgba(100, 181, 246, 0.25)
+        );
+}
+
+
+/* حركة اللون داخل الحروف */
+
+@keyframes samooTextFlow {
+
+    0% {
+        background-position: 100% 50%;
+
+        filter:
+            drop-shadow(
+                0 0 3px rgba(100, 181, 246, 0.20)
+            );
+    }
+
+    50% {
+        background-position: 0% 50%;
+
+        filter:
+            drop-shadow(
+                0 0 8px rgba(100, 181, 246, 0.42)
+            );
+    }
+
+    100% {
+        background-position: 100% 50%;
+
+        filter:
+            drop-shadow(
+                0 0 3px rgba(100, 181, 246, 0.20)
+            );
+    }
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+   ========================================================= */
+
+.header-actions {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    flex-wrap: nowrap !important;
+
+    gap: 8px;
+
+    height: 100%;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    white-space: nowrap;
+
+    flex: 0 0 auto;
+}
+
+
+/* =========================================================
+   ICONS — NO BACKGROUND
+   ========================================================= */
+
+.header-actions .icon-btn {
+    position: relative !important;
+
+    top: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+
+    transform: none !important;
+
+    width: 32px !important;
+    height: 38px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    border: none !important;
+
+    background: transparent !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex: 0 0 32px !important;
+
+    font-size: 18px;
+
+    transition:
+        transform 0.18s ease,
+        filter 0.18s ease;
+}
+
+
+/* =========================================================
+   TOUCH EFFECT
+   ========================================================= */
+
+.header-actions .icon-btn:active {
+    transform: scale(0.84) !important;
+
+    filter:
+        brightness(1.35)
+        drop-shadow(
+            0 0 6px rgba(100, 181, 246, 0.45)
+        );
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.header-actions .icon-btn[onclick="openSearchPanel()"] {
+    color: #64b5f6 !important;
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+   ========================================================= */
+
+.header-actions .icon-btn[onclick="toggleNotifPanel()"] {
+    color: #ffd54f !important;
+}
+
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+.header-actions .icon-btn[onclick="toggleTheme()"] {
+    color: #90caf9 !important;
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+.header-actions .logout-btn {
+    color: #ff6262 !important;
+}
+
+
+/* =========================================================
+   NOTIFICATION BADGE
+   ========================================================= */
+
+.badge-dot {
+    position: absolute;
+
+    top: 6px;
+    right: 4px;
+
+    width: 7px;
+    height: 7px;
+
+    background: #ff5252;
+
+    border-radius: 50%;
+
+    border: 2px solid #1a237e;
+
+    box-shadow:
+        0 0 7px rgba(255, 82, 82, 0.75);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    header {
+        height: 57px !important;
+        min-height: 57px !important;
+
+        padding: 6px 8px !important;
+    }
+
+    .brand {
+        gap: 7px;
+    }
+
+    .brand span {
+        font-size: 18px;
+        letter-spacing: 1px;
+    }
+
+    .user-avatar {
+        width: 36px !important;
+        height: 36px !important;
+
+        flex-basis: 36px;
+    }
+
+    .header-actions {
+        gap: 5px;
+    }
+
+    .header-actions .icon-btn {
+        width: 30px !important;
+        height: 36px !important;
+
+        flex-basis: 30px !important;
+
+        font-size: 17px;
+    }
+}
+
+/* =========================================================
+   SAMOO — PREMIUM MOBILE NAVIGATION
+   ========================================================= */
+
+nav {
+    position: relative !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-around !important;
+
+    width: 100%;
+    height: 50px;
+
+    padding: 0 8px !important;
+    margin: 0 !important;
+
+    box-sizing: border-box;
+
+    background: var(--c-nav-bg) !important;    border-bottom: 1px solid rgba(26, 35, 126, 0.08);
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+
+    direction: rtl;
+
+    z-index: 900;
+}
+
+
+/* الأزرار — بدون أي خلفية */
+
+nav button {
+    position: relative;
+
+    width: 25%;
+    height: 50px;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    border: none !important;
+    outline: none !important;
+
+    background: transparent !important;
+
+    color: var(--c-text-muted);
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    font-size: 19px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.3s ease,
+        transform 0.18s ease;
+}
+
+/* الأيقونة */
+
+nav button i {
+    position: relative;
+
+    display: inline-block;
+
+    transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
+}
+
+
+/* =========================================================
+   الأيقونة النشطة — واضحة وفخمة
+   ========================================================= */
+
+nav button.active {
+    color: #42a5f5 !important;
+}
+
+nav button.active i {
+    color: #42a5f5 !important;
+
+    transform: translateY(-2px) scale(1.10);
+
+    filter:
+        drop-shadow(0 0 5px rgba(66, 165, 245, 0.45));
+
+    transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
+}
+
+
+/* الخط أسفل الأيقونة النشطة */
+nav button::after {
+    content: "";
+
+    position: absolute;
+
+    bottom: 3px;
+    left: 50%;
+
+    width: 0;
+    height: 3px;
+
+    border-radius: 3px;
+
+    background: #42a5f5;
+
+    transform: translateX(-50%);
+
+    box-shadow: none;
+
+    transition: width 0.3s ease;
+}
+
+nav button.active::after {
+    width: 25px;
+}
+
+
+/* =========================================================
+   تأثير لمس الهاتف
+   ========================================================= */
+
+nav button:active {
+    transform: scale(0.86);
+}
+
+
+nav button:active i {
+    transform: scale(0.92);
+}
+
+
+/* =========================================================
+   الهاتف
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    nav {
+        height: 48px;
+
+        padding: 0 4px !important;
+    }
+
+    nav button {
+        height: 48px;
+
+        font-size: 18px;
+    }
+
+    nav button.active i {
+        transform: translateY(-2px) scale(1.10);
+    }
+
+    nav button.active::after {
+        width: 23px;
+    }
 }
