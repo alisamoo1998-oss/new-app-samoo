@@ -1,0 +1,626 @@
+/* =========================================================
+   SAMOO - Design Tokens / Dark Mode / Shared Animations
+   (لا يغيّر أي كلاس قديم، فقط يضيف طبقة توحيد + ثيم)
+========================================================= */
+
+:root{
+    --c-bg:#f2f2f2;
+    --c-header:#1a237e;
+    --c-header-text:#ffffff;
+    --c-card:#ffffff;
+    --c-text:#222222;
+    --c-text-muted:#666666;
+    --c-text-soft:#888888;
+    --c-border:#e2e5ea;
+    --c-input-bg:#ffffff;
+    --c-nav-bg:#333333;
+    --c-primary:#1a237e;
+    --c-primary-light:#3949ab;
+    --c-success:#43a047;
+    --c-warning:#ff9800;
+    --c-danger:#e53935;
+    --c-info:#1976d2;
+    --c-shadow:0 3px 10px rgba(0,0,0,.08);
+    --c-shadow-lg:0 6px 20px rgba(0,0,0,.14);
+    --r-lg:16px;
+    --r-md:14px;
+    --r-sm:10px;
+    --tr:.25s ease;
+}
+
+[data-theme="dark"]{
+    --c-bg:#11131c;
+    --c-header:#1c2140;
+    --c-header-text:#eef0fb;
+    --c-card:#1a1e2e;
+    --c-text:#e8e9f3;
+    --c-text-muted:#a3a6bd;
+    --c-text-soft:#8286a0;
+    --c-border:#2a2f45;
+    --c-input-bg:#232842;
+    --c-nav-bg:#161927;
+    --c-primary:#3b48b3;
+    --c-primary-light:#5c6bd6;
+    --c-success:#3fae6a;
+    --c-warning:#e0982e;
+    --c-danger:#e05c53;
+    --c-info:#2f8fd8;
+    --c-shadow:0 3px 10px rgba(0,0,0,.35);
+    --c-shadow-lg:0 6px 20px rgba(0,0,0,.45);
+}
+
+html{ transition:background var(--tr); }
+
+/* ===== أساسيات عامة تتبدل مع الثيم ===== */
+body{
+    background:var(--c-bg);
+    color:var(--c-text);
+    transition:background var(--tr), color var(--tr);
+}
+
+header{
+    background:var(--c-header);
+    color:var(--c-header-text);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+}
+
+.header-actions{
+    position:absolute;
+    left:10px;
+    top:50%;
+    transform:translateY(-50%);
+    display:flex;
+    align-items:center;
+    gap:2px;
+}
+
+.header-actions .logout-btn{
+    position:static;
+    transform:none;
+}
+
+.icon-btn{
+    background:transparent;
+    border:none;
+    color:var(--c-header-text);
+    font-size:18px;
+    padding:6px 9px;
+    border-radius:50%;
+    cursor:pointer;
+    transition:background .2s, transform .2s;
+    position:relative;
+}
+
+.icon-btn:hover{
+    background:rgba(255,255,255,.15);
+    transform:translateY(-1px);
+}
+
+.icon-btn .badge-dot{
+    position:absolute;
+    top:2px;
+    right:2px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:#ff5252;
+    border:2px solid var(--c-header);
+    display:none;
+}
+
+.icon-btn .badge-dot.show{ display:block; }
+
+nav{ background:var(--c-nav-bg); transition:background var(--tr); }
+nav button{ background:var(--c-nav-bg); }
+nav button:hover{ filter:brightness(1.25); }
+
+section{ color:var(--c-text); }
+
+input,select,textarea{
+    background:var(--c-input-bg);
+    color:var(--c-text);
+    border-color:var(--c-border);
+}
+
+input::placeholder,textarea::placeholder{ color:var(--c-text-soft); }
+
+/* بطاقات موحّدة */
+.dashboard-header,
+.file-card,
+.file-info-card,
+.leave-item-card,
+.stats-container,
+.summary-card,
+#addFileSection,
+.add-section,
+.stats-details,
+.year-stats-box,
+.file-item,
+.details-grid div,
+.leave-item-notes,
+.file-last-action,
+.infraction-row,
+.infractions-tabs,
+.leave-tabs,
+.files-tabs{
+    background:var(--c-card);
+    color:var(--c-text);
+    box-shadow:var(--c-shadow);
+    transition:background var(--tr), box-shadow var(--tr), transform .2s;
+}
+
+.detail-row{ border-bottom-color:var(--c-border); }
+.tab-content, .filesTab{ color:var(--c-text); }
+
+.tab-btn{
+    background:var(--c-input-bg);
+    color:var(--c-text-muted);
+}
+
+.tab-btn.active{
+    background:var(--c-primary);
+    color:#fff;
+}
+
+/* ===== الوضع الليلي: تدرجات البطاقات الملونة تبقى كما هي (تصميم مقصود) ===== */
+
+[data-theme="dark"] #filesArchive .file-card,
+[data-theme="dark"] .archive-card{
+    background:#20233a;
+    border-color:#333a55;
+    color:var(--c-text);
+}
+
+[data-theme="dark"] .stats-details,
+[data-theme="dark"] .alerts-box,
+[data-theme="dark"] .year-stats-box{
+    background:#241f14;
+    border-color:#4a3f1f;
+}
+
+[data-theme="dark"] .stats-details{
+    background:var(--c-card);
+    border:1px solid var(--c-border);
+}
+
+[data-theme="dark"] .login-box{
+    background:var(--c-card);
+    color:var(--c-text);
+}
+
+[data-theme="dark"] .file-item,
+[data-theme="dark"] .details-grid div{
+    background:rgba(255,255,255,.05);
+}
+
+/* ===== أنيميشن مشترك ===== */
+@keyframes samooFadeIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes samooScaleIn{
+    from{ opacity:0; transform:scale(.92); }
+    to{ opacity:1; transform:scale(1); }
+}
+
+@keyframes samooSlideIn{
+    from{ opacity:0; transform:translateX(12px); }
+    to{ opacity:1; transform:translateX(0); }
+}
+
+section.active{ animation:samooFadeIn .35s ease; }
+.tab-content.active, .leave-tab-content.active{ animation:samooFadeIn .3s ease; }
+.dashboard-card, .file-card, .leave-item-card, .stat-card, .infraction-row{ animation:samooFadeIn .3s ease; }
+
+button{ transition:transform .15s ease, filter .15s ease, background .2s ease; }
+button:active{ transform:scale(.95); }
+
+.add-section.show, #addFileSection.show{ animation:samooScaleIn .25s ease; }
+
+/* ===== زر تبديل الوضع الليلي داخل قسم سريع ===== */
+.theme-toggle-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--c-card);
+    border-radius:var(--r-md);
+    box-shadow:var(--c-shadow);
+    padding:14px 16px;
+    margin:12px 0;
+}
+
+.theme-toggle-row span{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:bold;
+    color:var(--c-text);
+}
+
+.theme-switch{
+    width:50px;
+    height:28px;
+    border-radius:20px;
+    background:#ccc;
+    position:relative;
+    cursor:pointer;
+    border:none;
+    transition:background .25s;
+}
+
+.theme-switch::before{
+    content:"";
+    position:absolute;
+    top:3px;
+    right:3px;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:#fff;
+    transition:.25s;
+    box-shadow:0 2px 4px rgba(0,0,0,.25);
+}
+
+[data-theme="dark"] .theme-switch{ background:var(--c-primary); }
+[data-theme="dark"] .theme-switch::before{ right:25px; }
+
+/* ===== لوحة التنبيهات / البحث الشامل - نافذة منبثقة موحّدة ===== */
+.samoo-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    z-index:1000;
+    padding:14px;
+    box-sizing:border-box;
+    overflow-y:auto;
+}
+
+.samoo-overlay.show{
+    display:flex;
+    animation:samooFadeIn .2s ease;
+}
+
+.samoo-panel{
+    background:var(--c-card);
+    color:var(--c-text);
+    width:100%;
+    max-width:480px;
+    border-radius:var(--r-lg);
+    box-shadow:var(--c-shadow-lg);
+    margin-top:40px;
+    overflow:hidden;
+    animation:samooScaleIn .25s ease;
+}
+
+.samoo-panel-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 18px;
+    background:var(--c-primary);
+    color:#fff;
+}
+
+.samoo-panel-header h3{
+    margin:0;
+    font-size:17px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.samoo-panel-close{
+    background:transparent;
+    border:none;
+    color:#fff;
+    font-size:18px;
+    cursor:pointer;
+    padding:4px 8px;
+}
+
+.samoo-panel-body{
+    padding:16px;
+    max-height:70vh;
+    overflow-y:auto;
+}
+
+.samoo-empty{
+    text-align:center;
+    color:var(--c-text-soft);
+    padding:30px 10px;
+}
+
+.samoo-list-item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    background:var(--c-bg);
+    border-right:4px solid var(--c-warning);
+    border-radius:var(--r-sm);
+    padding:12px;
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:transform .15s;
+}
+
+.samoo-list-item:hover{ transform:translateX(-2px); }
+
+.samoo-list-item i{ color:var(--c-warning); margin-top:2px; }
+
+.samoo-list-item .item-title{ font-weight:bold; font-size:14px; margin-bottom:3px; }
+.samoo-list-item .item-sub{ font-size:12px; color:var(--c-text-muted); }
+
+.samoo-search-input{
+    width:100%;
+    padding:12px 14px;
+    border-radius:var(--r-sm);
+    border:1px solid var(--c-border);
+    background:var(--c-input-bg);
+    color:var(--c-text);
+    font-size:15px;
+    box-sizing:border-box;
+    margin-bottom:14px;
+}
+
+.samoo-search-group-title{
+    font-size:13px;
+    font-weight:bold;
+    color:var(--c-primary-light);
+    margin:14px 0 8px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.samoo-search-result{
+    background:var(--c-bg);
+    border-radius:var(--r-sm);
+    padding:10px 12px;
+    margin-bottom:8px;
+    cursor:pointer;
+    transition:transform .15s;
+    border-right:4px solid var(--c-info);
+}
+
+.samoo-search-result:hover{ transform:translateX(-2px); }
+.samoo-search-result .res-title{ font-weight:bold; font-size:14px; }
+.samoo-search-result .res-sub{ font-size:12px; color:var(--c-text-muted); margin-top:2px; }
+
+/* بطاقات Dashboard قابلة للضغط */
+.dashboard-card{ cursor:pointer; transition:transform .2s, box-shadow .2s; }
+.dashboard-card:active{ transform:scale(.96); }
+
+@media(max-width:700px){
+    .samoo-panel{ margin-top:14px; }
+}
+
+/* =========================================================
+   SAMOO - إصلاح الوضع الليلي (Dark Mode Readability Fixes)
+   يعالج فقط النصوص/الخلفيات الثابتة التي كانت غير مقروءة.
+   لا يؤثر إطلاقاً على الوضع النهاري.
+========================================================= */
+
+/* --- العناوين الزرقاء الداكنة (#1a237e) تصبح فاتحة في الليل --- */
+[data-theme="dark"] .dashboard-header h3,
+[data-theme="dark"] .files-header h3,
+[data-theme="dark"] #addFileSection h4,
+[data-theme="dark"] .file-title,
+[data-theme="dark"] .category-count,
+[data-theme="dark"] .detail-row .count,
+[data-theme="dark"] #result,
+[data-theme="dark"] .leave-tab-content h3,
+[data-theme="dark"] .year-group-title,
+[data-theme="dark"] .year-stats-grid b,
+[data-theme="dark"] .leave-item-kind,
+[data-theme="dark"] .login-icon,
+[data-theme="dark"] .login-box h2,
+[data-theme="dark"] .file-info-card h2{
+    color:#9fb0ff;
+}
+
+/* --- النصوص الأساسية الداكنة (#000 / #222 / #333 / #444) --- */
+[data-theme="dark"] .file-item b,
+[data-theme="dark"] .details-grid b,
+[data-theme="dark"] .leave-item-title,
+[data-theme="dark"] .stats-details h3,
+[data-theme="dark"] .file-person,
+[data-theme="dark"] .stats-details,
+[data-theme="dark"] .file-info-card,
+[data-theme="dark"] .file-card,
+[data-theme="dark"] .leave-item-card,
+[data-theme="dark"] .summary-card,
+[data-theme="dark"] .year-stats-box,
+[data-theme="dark"] .infraction-row,
+[data-theme="dark"] .add-section,
+[data-theme="dark"] #addFileSection{
+    color:var(--c-text);
+}
+
+/* --- النصوص الثانوية (#555 / #666 / #777 / #888 / #bbb) --- */
+[data-theme="dark"] .dashboard-header small,
+[data-theme="dark"] .summary-card small,
+[data-theme="dark"] .file-item,
+[data-theme="dark"] .file-item span,
+[data-theme="dark"] .details-grid span,
+[data-theme="dark"] .file-last-action,
+[data-theme="dark"] .date-input label,
+[data-theme="dark"] .loading,
+[data-theme="dark"] .loading i,
+[data-theme="dark"] .leave-legend,
+[data-theme="dark"] .year-stats-grid span,
+[data-theme="dark"] .leave-item-date,
+[data-theme="dark"] .leave-item-notes,
+[data-theme="dark"] label,
+[data-theme="dark"] small{
+    color:var(--c-text-muted);
+}
+
+/* --- عناوين التنبيهات والصناديق الصفراء --- */
+[data-theme="dark"] .alerts-box h4,
+[data-theme="dark"] .year-stats-box h4{
+    color:#ffb74d;
+}
+
+/* --- شارات حالة الملفات: تباين كافٍ في الليل --- */
+[data-theme="dark"] .status-open{ color:#ffcc66; }
+[data-theme="dark"] .status-closed{ color:#7fd99a; }
+[data-theme="dark"] .status-follow{ color:#ff8a80; }
+[data-theme="dark"] .archive-date{ color:#7fd99a; }
+
+/* --- خلفيات فاتحة ثابتة لم تكن مشمولة سابقاً --- */
+[data-theme="dark"] .year-stats-grid div,
+[data-theme="dark"] .category-card,
+[data-theme="dark"] .stat-detail,
+[data-theme="dark"] .archive-card{
+    background:var(--c-card);
+    color:var(--c-text);
+}
+
+/* --- تبويبات غير نشطة --- */
+[data-theme="dark"] .tab-btn:not(.active){
+    background:var(--c-input-bg);
+    color:var(--c-text-muted);
+}
+[data-theme="dark"] .tab-btn.active{ color:#fff; }
+
+/* --- الحقول والقوائم المنسدلة (بما فيها خيارات select) --- */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea{
+    background:var(--c-input-bg);
+    color:var(--c-text);
+    border-color:var(--c-border);
+}
+[data-theme="dark"] select option{
+    background:var(--c-input-bg);
+    color:var(--c-text);
+}
+[data-theme="dark"] input[type="date"]{ color-scheme:dark; }
+
+/* --- أي نص مولّد بـ JS بلون رمادي داكن inline --- */
+[data-theme="dark"] [style*="color:#666"],
+[data-theme="dark"] [style*="color: #666"],
+[data-theme="dark"] [style*="color:#333"],
+[data-theme="dark"] [style*="color: #333"],
+[data-theme="dark"] [style*="color:#222"],
+[data-theme="dark"] [style*="color:#000"]{
+    color:var(--c-text-muted) !important;
+}
+
+/* --- نصوص عامة داخل الأقسام تضمن عدم اختفاء أي كتابة --- */
+[data-theme="dark"] section,
+[data-theme="dark"] section h1,
+[data-theme="dark"] section h2,
+[data-theme="dark"] section h3,
+[data-theme="dark"] section h4,
+[data-theme="dark"] section p,
+[data-theme="dark"] section span,
+[data-theme="dark"] section div,
+[data-theme="dark"] section li,
+[data-theme="dark"] section td,
+[data-theme="dark"] section th{
+    border-color:var(--c-border);
+}
+
+/* الجداول */
+[data-theme="dark"] table{ color:var(--c-text); }
+[data-theme="dark"] th,
+[data-theme="dark"] td{ border-color:var(--c-border); }
+[data-theme="dark"] tr:nth-child(even){ background:rgba(255,255,255,.03); }
+
+/* =========================================================
+   أفاتار شاشة الدخول
+========================================================= */
+.login-avatar{
+    width:86px;
+    height:86px;
+    border-radius:50%;
+    object-fit:cover;
+    margin-bottom:12px;
+    border:3px solid var(--c-primary);
+    box-shadow:var(--c-shadow-lg);
+}
+
+/* =========================================================
+   الوضع الليلي - قسم المخالفات والغرامات والأرشيف
+========================================================= */
+[data-theme="dark"] .infraction-row{
+    background:var(--c-card);
+    color:var(--c-text);
+    box-shadow:var(--c-shadow);
+}
+
+[data-theme="dark"] .infraction-info span{
+    background:var(--c-input-bg);
+    color:var(--c-text);
+}
+
+[data-theme="dark"] .infraction-info i{ color:var(--c-text-muted); }
+
+[data-theme="dark"] .infraction-info .classification-badge{
+    background:var(--c-primary-light);
+    color:#fff;
+}
+
+[data-theme="dark"] .infraction-actions{ border-top-color:var(--c-border); }
+
+[data-theme="dark"] .statusBtn{
+    background:var(--c-input-bg);
+    color:var(--c-text);
+}
+[data-theme="dark"] .statusBtn.green{
+    background:var(--c-success);
+    color:#fff;
+}
+
+[data-theme="dark"] .expired-fine{
+    background:rgba(224,92,83,.16) !important;
+    border-color:var(--c-danger) !important;
+    color:var(--c-text);
+}
+[data-theme="dark"] .late-report{
+    background:rgba(224,152,46,.16) !important;
+    border-color:var(--c-warning) !important;
+    color:var(--c-text);
+}
+
+[data-theme="dark"] .alerts-box{
+    background:rgba(224,152,46,.12);
+    border-color:var(--c-warning);
+    color:var(--c-text);
+}
+[data-theme="dark"] .alert-item{
+    border-bottom-color:var(--c-border);
+    color:var(--c-text);
+}
+
+[data-theme="dark"] .stats-details{
+    background:var(--c-card);
+    color:var(--c-text);
+}
+[data-theme="dark"] .stats-details h3{ color:#9fb0ff; }
+[data-theme="dark"] .detail-row{
+    border-bottom-color:var(--c-border);
+    color:var(--c-text);
+}
+[data-theme="dark"] .archive .infraction-row{ background:var(--c-card); }
+[data-theme="dark"] .archiveToggle{
+    background:var(--c-input-bg);
+    color:var(--c-text);
+}
+[data-theme="dark"] .search-box input,
+[data-theme="dark"] #searchInput{
+    background:var(--c-input-bg);
+    color:var(--c-text);
+    border:1px solid var(--c-border);
+}
+[data-theme="dark"] .search-box input::placeholder,
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder{ color:var(--c-text-soft); }
