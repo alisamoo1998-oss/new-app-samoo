@@ -1,0 +1,335 @@
+/* =========================================================
+   SAMOO - Leave Management (إدارة الإجازات)
+========================================================= */
+
+.leave-section{
+    padding:5px;
+}
+
+/* ===== تبويبات الفروع الخمسة ===== */
+.leave-tabs{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:6px;
+    background:#fff;
+    padding:8px;
+    margin:10px 0 15px;
+    border-radius:14px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.leave-tab-content{
+    display:none;
+    animation:fadeIn .3s ease;
+}
+
+.leave-tab-content.active{
+    display:block;
+}
+
+.leave-tab-content h3{
+    color:#1a237e;
+    margin-top:0;
+}
+
+/* ===== مفتاح الألوان ===== */
+.leave-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+    margin-bottom:15px;
+    font-size:13px;
+    color:#555;
+}
+
+.leave-legend span{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.leave-dot-regular{ color:#1976d2; }
+.leave-dot-exceptional{ color:#43a047; }
+.leave-dot-vacation{ color:#fb8c00; }
+
+/* ===== أرشيف الإجازات: تجميع حسب السنة ===== */
+.year-group{
+    margin-bottom:22px;
+}
+
+.year-group-title{
+    color:#1a237e;
+    font-size:18px;
+    margin:0 0 10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding-bottom:8px;
+    border-bottom:2px solid #e0e0e0;
+}
+
+.year-stats-box{
+    background:#fff8e1;
+    border:2px solid #ffb300;
+    border-radius:10px;
+    padding:15px;
+    margin-top:12px;
+}
+
+.year-stats-box h4{
+    margin:0 0 10px 0;
+    color:#e65100;
+    font-size:15px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.year-stats-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.year-stats-grid div{
+    background:#fff;
+    padding:10px;
+    border-radius:8px;
+}
+
+.year-stats-grid span{
+    display:block;
+    font-size:12px;
+    color:#777;
+    margin-bottom:4px;
+}
+
+.year-stats-grid b{
+    font-size:16px;
+    color:#1a237e;
+}
+
+/* ===== ألوان ثابتة لأنواع سجلات الإجازة ===== */
+.leave-record-regular{ border-right-color:#1976d2; }
+.leave-record-exceptional{ border-right-color:#43a047; }
+.leave-record-vacation{ border-right-color:#fb8c00; }
+
+/* ===== ألوان ثابتة لأنواع سجلات المناوبة ===== */
+.duty-record-khafara{ border-right-color:#1976d2; }
+.duty-record-hirasa{ border-right-color:#43a047; }
+.duty-record-raha{ border-right-color:#fb8c00; }
+
+/* ===== بطاقات عامة (مهام / صيانة / مناوبة) ===== */
+.leave-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.leave-item-card{
+    background:#fff;
+    border-radius:14px;
+    padding:14px 16px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+    border-right:5px solid #1a237e;
+}
+
+.leave-item-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+}
+
+.leave-item-kind{
+    font-weight:bold;
+    color:#1a237e;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:14px;
+}
+
+.leave-item-date{
+    font-size:13px;
+    color:#777;
+}
+
+.leave-item-title{
+    font-size:16px;
+    font-weight:bold;
+    color:#222;
+    margin-bottom:6px;
+}
+
+.leave-item-notes{
+    font-size:14px;
+    color:#555;
+    background:#f7f9fc;
+    padding:8px 10px;
+    border-radius:8px;
+    margin-bottom:8px;
+    line-height:1.6;
+}
+
+.leave-item-actions{
+    display:flex;
+    justify-content:flex-end;
+    border-top:1px solid #eee;
+    padding-top:8px;
+}
+
+/* ===== جدول المناوبة: أزرار سريعة ===== */
+.duty-quick-buttons{
+    display:flex;
+    gap:10px;
+    margin:10px 0;
+}
+
+.duty-btn{
+    flex:1;
+    padding:18px 8px;
+    border-radius:14px;
+    color:#fff;
+    font-size:15px;
+    font-weight:bold;
+    box-shadow:0 4px 10px rgba(0,0,0,.15);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    transition:.2s;
+}
+
+.duty-btn i{
+    font-size:22px;
+}
+
+.duty-btn:active{
+    transform:scale(.95);
+}
+
+.duty-guard{ background:linear-gradient(135deg,#ff9a44 0%,#fc6076 100%); }
+.duty-security{ background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%); }
+.duty-rest{ background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%); }
+
+/* ===== Responsive ===== */
+@media(max-width:700px){
+    .details-grid{
+        grid-template-columns:1fr;
+    }
+    .duty-quick-buttons{
+        flex-direction:column;
+    }
+}
+
+/* =========================================================
+   بطاقة إجازة مضغوطة + فلتر السنوات
+========================================================= */
+.leave-year-filter{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:10px 0 14px;
+}
+
+.leave-year-btn{
+    padding:6px 14px;
+    border-radius:999px;
+    border:1px solid var(--c-border);
+    background:var(--c-card);
+    color:var(--c-text-muted);
+    font-size:13px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:var(--tr);
+}
+
+.leave-year-btn.active{
+    background:var(--c-primary);
+    border-color:var(--c-primary);
+    color:#fff;
+}
+
+.leave-card-compact{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:10px 12px;
+    border-radius:12px;
+    background:var(--c-card);
+    box-shadow:var(--c-shadow);
+}
+
+.leave-compact-main{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.leave-compact-title{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:14px;
+    font-weight:bold;
+    color:var(--c-primary);
+}
+
+[data-theme="dark"] .leave-compact-title{ color:#9fb0ff; }
+
+.leave-chip{
+    font-size:11px;
+    font-weight:normal;
+    padding:2px 8px;
+    border-radius:999px;
+    background:var(--c-bg);
+    color:var(--c-text-muted);
+}
+
+.leave-compact-dates{
+    font-size:13px;
+    color:var(--c-text);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    direction:rtl;
+}
+
+.leave-compact-note{
+    font-size:12px;
+    color:var(--c-text-muted);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    line-height:1.5;
+    overflow-wrap:anywhere;
+}
+
+.leave-compact-actions{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+}
+
+.leave-compact-actions button{
+    padding:4px 8px;
+    font-size:12px;
+}
+
+.year-stats-avg{
+    margin-top:10px;
+    font-size:13px;
+    background:var(--c-card);
+    color:var(--c-text);
+    padding:8px 10px;
+    border-radius:8px;
+}

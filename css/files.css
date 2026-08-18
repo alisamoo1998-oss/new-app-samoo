@@ -1,0 +1,1110 @@
+/* =========================================================
+   SAMOO - Files Management
+========================================================= */
+
+.files-section{
+    padding:15px;
+    animation:fadeIn .3s ease;
+}
+
+.files-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.files-header h3{
+    margin:0;
+    color:#1a237e;
+    font-size:22px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.new-file-btn{
+    width:48px;
+    height:48px;
+    border:none;
+    border-radius:50%;
+    background:#1a237e;
+    color:#fff;
+    cursor:pointer;
+    font-size:20px;
+    transition:.25s;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+
+.new-file-btn:hover{
+    transform:scale(1.08);
+}
+
+.search-box{
+    margin:15px 0;
+}
+
+.search-box input{
+    width:100%;
+    padding:12px 15px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    outline:none;
+    font-size:15px;
+    box-sizing:border-box;
+}
+
+.search-box input:focus{
+    border-color:#1a237e;
+}
+
+.files-summary{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.summary-card{
+    background:#fff;
+    border-radius:12px;
+    padding:15px;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.summary-card span{
+    display:block;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.summary-card small{
+    color:#666;
+    font-size:14px;
+}
+
+.summary-card.waiting{
+    border-right:5px solid #ff9800;
+}
+
+.summary-card.archive{
+    border-right:5px solid #4caf50;
+}
+
+/* ============================= */
+
+#addFileSection{
+
+    display:none;
+
+    background:#fff;
+
+    border-radius:14px;
+
+    padding:18px;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.10);
+
+    margin-bottom:20px;
+
+}
+
+#addFileSection.show{
+
+    display:block;
+
+}
+
+#addFileSection h4{
+
+    margin-top:0;
+
+    color:#1a237e;
+
+}
+
+#addFileSection input,
+
+#addFileSection textarea,
+
+#addFileSection select{
+
+    width:100%;
+
+    padding:12px;
+
+    margin-bottom:12px;
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    box-sizing:border-box;
+
+    font-size:15px;
+
+    transition:.2s;
+
+}
+
+#addFileSection input:focus,
+
+#addFileSection textarea:focus,
+
+#addFileSection select:focus{
+
+    border-color:#1a237e;
+
+}
+
+#newFileType{
+
+    display:none;
+
+}
+
+.addBtn{
+
+    width:100%;
+
+}
+/* ===========================================
+   بطاقات الملفات
+=========================================== */
+
+#filesList{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+.file-card{
+
+    background:#fff;
+
+    border-radius:14px;
+
+    padding:16px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+
+    position:relative;
+
+    transition:.25s;
+
+    border-right:5px solid #1a237e;
+
+}
+
+.file-card:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.file-title{
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    color:#1a237e;
+
+    margin-bottom:6px;
+
+}
+
+.file-person{
+
+    color:#444;
+
+    margin-bottom:8px;
+
+}
+
+.file-info{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:8px;
+
+    margin-top:10px;
+
+}
+
+.file-item{
+
+    font-size:14px;
+
+    color:#555;
+
+}
+
+.file-item b{
+
+    color:#000;
+
+}
+
+.file-status{
+
+    display:inline-block;
+
+    margin-top:12px;
+
+    padding:5px 12px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+}
+
+.status-open{
+
+    background:#fff3cd;
+
+    color:#856404;
+
+}
+
+.status-closed{
+
+    background:#d4edda;
+
+    color:#155724;
+
+}
+
+.status-follow{
+
+    background:#fdecea;
+
+    color:#b71c1c;
+
+}
+
+.file-last-action{
+
+    margin-top:10px;
+
+    font-size:14px;
+
+    color:#666;
+
+}
+
+/* ===========================================
+   أزرار البطاقة
+=========================================== */
+
+.file-buttons{
+display:flex;
+flex-direction:row;
+justify-content:center;
+align-items:center;
+gap:12px;
+width:100%;
+grid-column:1/-1;
+margin-top:15px;
+}
+
+.file-buttons button{
+width:42px;
+height:42px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-size:17px;
+color:#fff;
+transition:.2s;
+}
+
+.file-buttons button:hover{
+transform:scale(1.08);
+}
+
+.btn-open{
+background:#1976d2;
+color:#fff;
+}
+
+.btn-edit{
+background:#ff9800;
+color:#fff;
+}
+
+.btn-archive{
+background:#43a047;
+color:#fff;
+}
+
+.btn-delete{
+background:#e53935;
+color:#fff;
+}
+
+.file-buttons button:hover{
+transform:translateY(-2px) scale(1.05);
+filter:brightness(1.05);
+}
+
+.edit-file{
+
+    background:#1976d2;
+
+    color:#fff;
+
+}
+
+.archive-file{
+
+    background:#43a047;
+
+    color:#fff;
+
+}
+
+.delete-file{
+
+    background:#d32f2f;
+
+    color:#fff;
+
+}
+
+.edit-file:hover,
+
+.archive-file:hover,
+
+.delete-file:hover{
+
+    opacity:.9;
+
+}
+
+/* ===========================================
+   الأرشيف
+=========================================== */
+
+.archive{
+
+    display:none;
+
+    margin-top:20px;
+
+}
+
+.archive.show{
+
+    display:block;
+
+}
+
+.archive-card{
+
+    background:#fafafa;
+
+    border-right:5px solid #4caf50;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    margin-bottom:12px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+
+}
+
+.archive-date{
+
+    margin-top:8px;
+
+    color:#2e7d32;
+
+    font-size:13px;
+
+}
+
+/* ===========================================
+   لا توجد بيانات
+=========================================== */
+
+.loading{
+
+    text-align:center;
+
+    padding:40px;
+
+    color:#888;
+
+    font-size:17px;
+
+}
+
+.loading i{
+
+    display:block;
+
+    font-size:45px;
+
+    margin-bottom:12px;
+
+    color:#bbb;
+
+}
+
+/* ===========================================
+   Responsive
+=========================================== */
+
+@media(max-width:700px){
+
+.file-info{
+grid-template-columns:1fr;
+}
+
+.files-summary{
+grid-template-columns:1fr;
+}
+
+.file-buttons{
+flex-direction:row;
+justify-content:center;
+align-items:center;
+gap:10px;
+}
+
+}
+/* ===========================================
+   Animation
+=========================================== */
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+
+transform:translateY(10px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+
+.progress-box{
+
+    margin:15px 0;
+
+}
+
+.progress-bg{
+
+    width:100%;
+
+    height:10px;
+
+    background:#ddd;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+.progress-fill{
+
+    width:0;
+
+    height:100%;
+
+    background:#28a745;
+
+    transition:.3s;
+
+}
+
+.progress-header{
+
+    margin-bottom:6px;
+
+    font-weight:bold;
+
+}
+
+.files-tabs{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+background:#fff;
+padding:8px;
+margin:15px 0;
+border-radius:14px;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.tab-btn{
+flex:1;
+height:52px;
+border:none;
+border-radius:12px;
+background:#f4f6f8;
+color:#666;
+font-size:22px;
+cursor:pointer;
+transition:.25s;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.tab-btn:hover{
+background:#e8edf3;
+}
+
+.tab-btn.active{
+background:#1976d2;
+color:#fff;
+box-shadow:0 4px 12px rgba(25,118,210,.35);
+transform:translateY(-2px);
+}
+
+
+
+.file-card{
+background:#A8D8EA;
+border:1px solid #d8e8ff;
+border-radius:16px;
+padding:15px;
+margin-bottom:14px;
+box-shadow:0 3px 10px rgba(0,0,0,.06);
+transition:.2s;
+}
+
+.file-card:hover{
+transform:translateY(-2px);
+box-shadow:0 6px 18px rgba(0,0,0,.10);
+}
+
+#filesArchive .file-card{
+background:#d0d3da;
+border:1px solid #dcdfe4;
+}
+
+.file-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:12px;
+}
+
+.file-title{
+font-size:18px;
+font-weight:700;
+color:#1d3557;
+}
+
+.file-person{
+margin-bottom:15px;
+font-size:15px;
+color:#444;
+}
+
+.file-info{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-bottom:15px;
+}
+
+.file-item{
+background:rgba(255,255,255,.55);
+padding:10px;
+border-radius:10px;
+}
+
+.file-item span{
+display:block;
+font-size:12px;
+color:#777;
+margin-bottom:4px;
+}
+
+.file-item b{
+font-size:15px;
+color:#222;
+}
+
+.file-last-action{
+background:#ffffff90;
+padding:12px;
+border-radius:10px;
+margin-bottom:15px;
+line-height:1.6;
+}
+
+.file-buttons{
+display:flex;
+justify-content:space-evenly;
+gap:8px;
+margin-top:10px;
+}
+
+.file-buttons button{
+width:42px;
+height:42px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-size:17px;
+}
+
+.file-info-card{
+background:#fff;
+border-radius:16px;
+padding:18px;
+box-shadow:0 3px 12px rgba(0,0,0,.08);
+margin-bottom:18px;
+}
+
+.file-info-card h2{
+margin:0 0 18px;
+color:#1d3557;
+font-size:22px;
+}
+
+.details-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+}
+
+.details-grid div{
+background:#f7f9fc;
+padding:12px;
+border-radius:10px;
+}
+
+.details-grid span{
+display:block;
+font-size:12px;
+color:#777;
+margin-bottom:4px;
+}
+
+.details-grid b{
+font-size:15px;
+color:#222;
+}
+
+/* ===========================================
+   التصنيفات (قيد المتابعة)
+=========================================== */
+
+.file-categories{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:15px;
+}
+
+.category-card{
+    background:var(--c-card,#fff);
+    border:none;
+    border-radius:var(--r-md,14px);
+    box-shadow:var(--c-shadow,0 3px 10px rgba(0,0,0,.08));
+    padding:16px 10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    transition:.2s;
+    color:var(--c-text,#222);
+}
+
+.category-card:hover,
+.category-card:active{
+    transform:translateY(-3px);
+    box-shadow:0 8px 18px rgba(0,0,0,.14);
+}
+
+.category-icon{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#1a237e 0%,#3949ab 100%);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+}
+
+.category-name{
+    font-size:14px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.category-count{
+    background:#eef0f7;
+    color:#1a237e;
+    font-size:13px;
+    font-weight:bold;
+    padding:2px 12px;
+    border-radius:20px;
+}
+
+[data-theme="dark"] .category-count{
+    background:#232842;
+    color:#c6cbf0;
+}
+
+.back-to-categories{
+    background:transparent;
+    border:1px solid var(--c-border,#ddd);
+    color:var(--c-primary,#1a237e);
+    border-radius:20px;
+    padding:8px 16px;
+    font-size:13px;
+    margin-bottom:14px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+
+/* ===========================================
+   بطاقة الاستدعاء - شكل الورقة المثقبة
+=========================================== */
+
+.summons-card{
+    position:relative;
+    border-radius:6px;
+    padding:0;
+    margin-bottom:16px;
+    box-shadow:0 4px 14px rgba(0,0,0,.10);
+    overflow:hidden;
+    background:
+        repeating-linear-gradient(
+            180deg,
+            transparent 0px,
+            transparent 27px,
+            rgba(0,0,0,.035) 27px,
+            rgba(0,0,0,.035) 28px
+        ),
+        #fbf9f2;
+    border:1px solid #e6e1d0;
+    animation:samooFadeIn .3s ease;
+}
+
+.summons-warrant{
+    background:
+        repeating-linear-gradient(
+            180deg,
+            transparent 0px,
+            transparent 27px,
+            rgba(0,0,0,.035) 27px,
+            rgba(0,0,0,.035) 28px
+        ),
+        #fbeeee;
+    border-color:#f0d5d5;
+}
+
+[data-theme="dark"] .summons-card{
+    background:
+        repeating-linear-gradient(
+            180deg,
+            transparent 0px,
+            transparent 27px,
+            rgba(255,255,255,.03) 27px,
+            rgba(255,255,255,.03) 28px
+        ),
+        #23241f;
+    border-color:#3a3a30;
+}
+
+[data-theme="dark"] .summons-warrant{
+    background:
+        repeating-linear-gradient(
+            180deg,
+            transparent 0px,
+            transparent 27px,
+            rgba(255,255,255,.03) 27px,
+            rgba(255,255,255,.03) 28px
+        ),
+        #2a1f1f;
+    border-color:#3f2828;
+}
+
+.summons-archived{
+    opacity:.92;
+    filter:saturate(.85);
+}
+
+.summons-holes{
+    position:absolute;
+    top:0;
+    bottom:0;
+    right:8px;
+    width:14px;
+    background-image:radial-gradient(circle, rgba(0,0,0,.18) 3px, transparent 3.5px);
+    background-size:14px 22px;
+    background-repeat:repeat-y;
+}
+
+.summons-holes::after{
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    right:-8px;
+    width:14px;
+    background-image:radial-gradient(circle, rgba(0,0,0,.18) 3px, transparent 3.5px);
+    background-size:14px 22px;
+    background-repeat:repeat-y;
+    left:auto;
+}
+
+.summons-body{
+    padding:16px 34px 16px 16px;
+}
+
+.summons-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.summons-kind{
+    font-size:13px;
+    font-weight:bold;
+    color:#6d5e2f;
+    background:rgba(255,255,255,.55);
+    padding:3px 10px;
+    border-radius:20px;
+}
+
+.summons-warrant .summons-kind{
+    color:#8a2f2f;
+}
+
+.summons-badge{
+    font-size:12px;
+    font-weight:bold;
+    padding:3px 10px;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.summons-badge i{ font-size:8px; }
+
+.summons-badge-pending{ background:#fff3cd; color:#8a6d00; }
+.summons-badge-delivered{ background:#d7f0dd; color:#1e6b32; }
+.summons-badge-notdelivered{ background:#fbdede; color:#a13333; }
+.summons-badge-archived{ background:#e1e3ea; color:#444; }
+
+.summons-name{
+    font-size:19px;
+    font-weight:bold;
+    color:#2c2410;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+[data-theme="dark"] .summons-name{ color:#f0ead5; }
+
+.summons-sub{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    font-size:13px;
+    color:#6b6249;
+    margin-bottom:8px;
+}
+
+[data-theme="dark"] .summons-sub{ color:#b8b193; }
+
+.summons-notes{
+    font-size:13px;
+    color:#5a5340;
+    background:rgba(255,255,255,.5);
+    padding:8px 10px;
+    border-radius:8px;
+    margin-bottom:10px;
+    line-height:1.6;
+}
+
+[data-theme="dark"] .summons-notes{ background:rgba(255,255,255,.06); color:#cfc9ae; }
+
+.summons-meta{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.summons-meta div{
+    background:rgba(255,255,255,.5);
+    padding:8px;
+    border-radius:8px;
+}
+
+[data-theme="dark"] .summons-meta div{ background:rgba(255,255,255,.06); }
+
+.summons-meta span{
+    display:block;
+    font-size:11px;
+    color:#8a8265;
+}
+
+.summons-meta b{
+    font-size:13px;
+    color:#33301f;
+}
+
+[data-theme="dark"] .summons-meta b{ color:#e5dfc4; }
+
+.summons-actions{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding-top:10px;
+    border-top:1px dashed rgba(0,0,0,.12);
+}
+
+[data-theme="dark"] .summons-actions{ border-top-color:rgba(255,255,255,.12); }
+
+.summons-actions button{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:15px;
+    color:#fff;
+}
+
+.delivery-box{
+    display:none;
+    margin-top:12px;
+    background:rgba(255,255,255,.7);
+    border-radius:10px;
+    padding:12px;
+}
+
+[data-theme="dark"] .delivery-box{ background:rgba(255,255,255,.06); }
+
+.delivery-box.show{ display:block; animation:samooScaleIn .2s ease; }
+
+.delivery-choices{
+    display:flex;
+    gap:10px;
+}
+
+.delivery-choices button{
+    flex:1;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    color:#fff;
+    font-size:13px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.delivery-yes{ background:#43a047; }
+.delivery-no{ background:#e53935; }
+
+.reason-box{
+    display:none;
+    margin-top:10px;
+    gap:8px;
+    flex-direction:column;
+}
+
+.reason-box.show{ display:flex; }
+
+.reason-box select{
+    margin:0;
+}
+
+/* ===========================================
+   الرسم البياني البسيط للإحصائيات
+=========================================== */
+
+.samoo-bar-chart{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.bar-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.bar-label{
+    width:90px;
+    font-size:13px;
+    color:var(--c-text-muted,#666);
+    flex-shrink:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.bar-track{
+    flex:1;
+    height:14px;
+    background:#eef0f5;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+[data-theme="dark"] .bar-track{ background:#232842; }
+
+.bar-fill{
+    height:100%;
+    border-radius:10px;
+    transition:width .5s ease;
+}
+
+.bar-count{
+    width:28px;
+    text-align:center;
+    font-size:13px;
+    font-weight:bold;
+    color:var(--c-text,#222);
+}
+
+@media(max-width:400px){
+    .file-categories{ grid-template-columns:repeat(2,1fr); }
+    .summons-meta{ grid-template-columns:1fr; }
+}
