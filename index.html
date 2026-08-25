@@ -767,6 +767,19 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+            .then(() => {
+                console.log("Samoo Offline Service Worker registered");
+            })
+            .catch(error => {
+                console.error("Samoo Service Worker registration failed:", error);
+            });
+    });
+}
+</script>
 
 </body>
 </html>
