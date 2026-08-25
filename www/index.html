@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<title>SAMOO - نظام المخالفات</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/files.css">
+<link rel="stylesheet" href="css/leave.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<!-- شاشة تسجيل الدخول -->
+<div id="loginScreen" class="login-screen">
+    <div class="login-box">
+        <img src="profile.png" alt="SAMOO" class="login-avatar">
+        <h2>SAMOO</h2>
+        <input id="loginEmail" type="email" placeholder="البريد الإلكتروني" autocomplete="username">
+        <input id="loginPassword" type="password" placeholder="كلمة المرور" autocomplete="current-password">
+        <div id="loginError" class="login-error"></div>
+        <button id="loginBtn" class="addBtn" onclick="login()">دخول</button>
+    </div>
+</div>
+
+<!-- محتوى التطبيق الفعلي (مخفي حتى تسجيل الدخول) -->
+<div id="appContent" style="display:none;">
+
+<header>
+    
+  <div class="brand">
+    <!-- تم استبدال أيقونة الدرع بصورتك الشخصية -->
+    <img src="profile.png" alt="صورتي" class="user-avatar">
+    <span>SAMOO</span>
+  </div>
+
+    <div class="header-actions">
+        <button onclick="openSearchPanel()" class="icon-btn" title="البحث في Samoo">
+            <i class="fas fa-search"></i>
+        </button>
+
+        <button onclick="toggleNotifPanel()" class="icon-btn" title="التنبيهات">
+            <i class="fas fa-bell"></i>
+            <span id="notifBadge" class="badge-dot"></span>
+        </button>
+
+        <button onclick="toggleTheme()" class="icon-btn" title="الوضع الليلي/النهاري">
+            <i id="themeIcon" class="fas fa-moon"></i>
+        </button>
+
+        <button onclick="logout()" class="icon-btn logout-btn" title="تسجيل الخروج">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </div>
+</header>
+
+<!-- نافذة البحث الشامل -->
+<div id="searchOverlay" class="samoo-overlay">
+    <div class="samoo-panel">
+        <div class="samoo-panel-header">
+            <h3><i class="fas fa-search"></i> البحث في Samoo</h3>
+            <button class="samoo-panel-close" onclick="closeSearchPanel()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="samoo-panel-body">
+            <input id="globalSearchInput" class="samoo-search-input" placeholder="ابحث بالاسم، رقم الملف، رقم المحضر..." oninput="runGlobalSearch()">
+            <div id="globalSearchResults">
+                <div class="samoo-empty"><i class="fas fa-search" style="font-size:28px;display:block;margin-bottom:10px;"></i>اكتب كلمة أو رقم للبحث</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- نافذة التنبيهات -->
+<div id="notifOverlay" class="samoo-overlay">
+    <div class="samoo-panel">
+        <div class="samoo-panel-header">
+            <h3><i class="fas fa-bell"></i> التنبيهات</h3>
+            <button class="samoo-panel-close" onclick="closeNotifPanel()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="samoo-panel-body">
+            <div id="notifPanelBody">
+                <div class="samoo-empty"><i class="fas fa-spinner fa-spin" style="font-size:28px;display:block;margin-bottom:10px;"></i>جاري التحميل...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav>
+    <button onclick="show('dashboard')" title="Dashboard"><i class="fas fa-chart-pie"></i></button>
+    <button onclick="show('infractions')"><i class="fas fa-exclamation-triangle"></i></button>
+    <button onclick="show('pieces')" title="إدارة الملفات"><i class="fas fa-folder-open"></i></button>                  
+    <button onclick="show('info')"><i class="fas fa-calculator"></i></button>
+</nav>
+
+<section id="dashboard" class="active">
+    <div id="alertsBox" class="alerts-box" style="display:none;">
+    <h4>🔔 التنبيهات</h4>
+    <div id="alertsContent"></div>
+</div>
+    <div class="dashboard-header">
+        <h3><i class="fas fa-chart-pie"></i> Dashboard</h3>
+        <small id="dashboardMonth"></small>
+    </div>
+
+    <div class="dashboard-cards">
+        <div class="dashboard-card dashboard-card-violations" onclick="show('infractions')">
+            <i class="fas fa-clipboard-list"></i>
+            <div class="dashboard-number" id="dashboardInfractions">0</div>
+            <div class="dashboard-label">المخالفات</div>
+        </div>
+        <div class="dashboard-card dashboard-card-misdemeanors" onclick="show('infractions')">
+            <i class="fas fa-car-side"></i>
+            <div class="dashboard-number" id="dashboardMisdemeanors">0</div>
+            <div class="dashboard-label">الجنح</div>
+        </div>
+        <div class="dashboard-card dashboard-card-fines" onclick="show('infractions')">
+            <i class="fas fa-coins"></i>
+            <div class="dashboard-number" id="dashboardFines">0</div>
+            <div class="dashboard-label">الغرامات</div>
+        </div>
+        <div class="dashboard-card dashboard-card-police" onclick="show('infractions')">
+            <i class="fas fa-triangle-exclamation"></i>
+            <div class="dashboard-number" id="dashboardSpecialPolice">0</div>
+            <div class="dashboard-label">الشرطة الخاصة</div>
+        </div>
+        <div class="dashboard-card dashboard-card-total" onclick="show('infractions')">
+            <i class="fas fa-chart-column"></i>
+            <div class="dashboard-number" id="dashboardTotal">0</div>
+            <div class="dashboard-label">المجموع</div>
+        </div>
+    </div>
+</section>
+
+<section id="infractions">
+    <!-- تبويبات قسم المخالفات - أيقونات فقط -->
+     <div class="search-box">
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="🔍 ابحث بالاسم أو رقم المحضر أو التاريخ..."
+        oninput="filterInfractions()">
+    </div>
+    <div class="infractions-tabs">
+        <button class="tab-btn active" onclick="switchInfractionTab('add')" title="إضافة">
+            <i class="fas fa-plus-circle"></i>
+        </button>
+        <button class="tab-btn" onclick="switchInfractionTab('list')" title="المخالفات">
+            <i class="fas fa-list"></i>
+        </button>
+        <button class="tab-btn" onclick="switchInfractionTab('archive')" title="الأرشيف">
+            <i class="fas fa-archive"></i>
+        </button>
+        <button class="tab-btn" onclick="switchInfractionTab('stats')" title="الإحصائيات">
+            <i class="fas fa-chart-bar"></i>
+        </button>
+    </div>
+    
+    <!-- محتوى تبويب الإضافة -->
+    <div id="add-tab" class="tab-content active">
+        <!-- زر الإضافة الأخضر -->
+        <button class="add-main-btn" onclick="toggleAddSection()">
+            <i class="fas fa-plus"></i>
+        </button>
+        
+        <!-- حقل الإضافة المخفي -->
+        <div id="addInfractionSection" class="add-section">
+            <h4><i class="fas fa-car"></i> إضافة مخالفة</h4>
+            <input id="nom" placeholder="اسم المخالف">
+            <input id="pv" placeholder="رقم المحضر">
+            <input id="date" type="date">
+            
+            <!-- تصنيف المخالفة -->
+            <select id="classification" class="classification-select" onchange="updateInfractionFields()">
+                <option value="">التصنيف</option>
+                <option value="جنحة">🚔 جنحة</option>
+                <option value="مخالفة">📋 مخالفة</option>
+                <option value="غرامة">💰 غرامة</option>
+            </select>
+
+            <div id="fineFields" class="conditional-fields">
+                <input id="fineType" placeholder="نوع الغرامة">
+                <input id="couponNumber" placeholder="رقم القسيمة">
+            </div>
+
+            <label id="specialPoliceField" class="checkbox-row">
+                <input id="specialPolice" type="checkbox">
+                <span>شرطة خاصة</span>
+            </label>
+            
+            <button class="addBtn" onclick="addInfraction()">
+                <i class="fas fa-save"></i> إضافة
+            </button>
+        </div>
+    </div>
+    
+    <!-- محتوى تبويب المخالفات -->
+    <div id="list-tab" class="tab-content">
+        <div id="infList" class="infractions-container">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+    </div>
+    
+    <!-- محتوى تبويب الأرشيف -->
+    <div id="archive-tab" class="tab-content">
+        <button class="archiveToggle" onclick="toggleArchive('infArchive')">
+            <i class="fas fa-eye"></i> عرض الأرشيف
+        </button>
+        <div id="infArchive" class="archive"></div>
+    </div>
+    
+    <!-- محتوى تبويب الإحصائيات -->
+    <div id="stats-tab" class="tab-content">
+        <div class="stats-container">
+            <div class="date-range">
+                <div class="date-input">
+                    <label><i class="fas fa-calendar-alt"></i> من:</label>
+                    <input type="date" id="statsFromDate">
+                </div>
+                <div class="date-input">
+                    <label><i class="fas fa-calendar-alt"></i> إلى:</label>
+                    <input type="date" id="statsToDate">
+                </div>
+            </div>
+            
+            <button class="stats-btn" onclick="calculateStats()">
+                <i class="fas fa-calculator"></i> احسب
+            </button>
+            
+            <!-- بطاقات الإحصائيات -->
+            <div id="statsCards" class="stats-cards">
+                <div class="stat-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="stat-number" id="totalInfractions">0</div>
+                    <div class="stat-label">الإجمالي</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-gavel"></i>
+                    <div class="stat-number" id="totalMisdemeanors">0</div>
+                    <div class="stat-label">الجنح</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-file-signature"></i>
+                    <div class="stat-number" id="totalViolations">0</div>
+                    <div class="stat-label">المخالفات</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <div class="stat-number" id="totalFines">0</div>
+                    <div class="stat-label">الغرامات</div>
+                </div>
+            </div>
+            
+            <!-- تفاصيل الإحصائيات -->
+            <div id="statsDetails" class="stats-details">
+                <h3><i class="fas fa-clock"></i> آخر المخالفات</h3>
+                <div id="recentInfractionsList"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="pieces" class="files-section">
+
+<div class="files-tabs">
+<button class="tab-btn active" onclick="showFilesTab('tabOpen',this)"><i class="fas fa-folder-open"></i></button>
+<button class="tab-btn" onclick="showFilesTab('tabArchive',this)"><i class="fas fa-box-archive"></i></button>
+<button class="tab-btn" onclick="showFilesTab('tabStats',this)"><i class="fas fa-chart-pie"></i></button>
+<button class="tab-btn" onclick="showFilesTab('tabAdd',this)"><i class="fas fa-plus-circle"></i></button>
+</div>
+
+<div id="tabOpen" class="filesTab">
+
+<div class="files-header">
+<h3><i class="fas fa-folder-open"></i> الملفات قيد المتابعة</h3>
+</div>
+
+<div class="search-box">
+<input id="fileSearch" placeholder="🔍 ابحث..." oninput="filterFiles()">
+</div>
+
+<div class="files-summary">
+<div class="summary-card waiting">
+<span id="openFilesCount">0</span>
+<small>قيد المتابعة</small>
+</div>
+
+<div class="summary-card archive">
+<span id="archiveFilesCount">0</span>
+<small>الأرشيف</small>
+</div>
+</div>
+
+<div id="fileCategories" class="file-categories">
+<div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+</div>
+
+<div id="filesListWrap" style="display:none;">
+<button class="back-to-categories" onclick="showAllCategories()">
+<i class="fas fa-arrow-right"></i> رجوع للتصنيفات
+</button>
+<div id="filesList"></div>
+</div>
+
+</div>
+
+<div id="tabArchive" class="filesTab" style="display:none">
+
+<div class="files-header">
+<h3><i class="fas fa-box-archive"></i> الأرشيف</h3>
+</div>
+
+<div id="filesArchive">
+<div class="loading">
+<i class="fas fa-box-open"></i>
+الأرشيف فارغ
+</div>
+</div>
+
+</div>
+
+<div id="tabStats" class="filesTab" style="display:none">
+
+<div class="files-header">
+<h3><i class="fas fa-chart-pie"></i> الإحصائيات</h3>
+</div>
+
+<div class="stats-cards">
+
+<div class="stat-card">
+<h3 id="statsOpenFiles">0</h3>
+<p>قيد المتابعة</p>
+</div>
+
+<div class="stat-card">
+<h3 id="statsArchivedFiles">0</h3>
+<p>الأرشيف</p>
+</div>
+
+<div class="stat-card">
+<h3 id="statsTotalFiles">0</h3>
+<p>الإجمالي</p>
+</div>
+
+</div>
+
+<table class="stats-table">
+<thead>
+<tr>
+<th>التصنيف</th>
+<th>العدد</th>
+</tr>
+</thead>
+<tbody id="statsTypes"></tbody>
+</table>
+
+<div class="file-info-card" style="margin-top:15px;">
+<h2><i class="fas fa-chart-bar"></i> توزيع الملفات حسب التصنيف</h2>
+<div id="statsChart" class="samoo-bar-chart"></div>
+</div>
+
+</div>
+
+<div id="tabAdd" class="filesTab" style="display:none">
+
+<div class="files-header">
+<h3><i class="fas fa-folder-plus"></i> إضافة ملف</h3>
+
+<button class="new-file-btn" onclick="toggleFileForm()">
+<i class="fas fa-plus"></i>
+</button>
+
+</div>
+
+<div id="addFileSection" class="add-section" style="display:none">
+
+<select id="fileType">
+<option value="">التصنيف</option>
+<option value="new">➕ إضافة تصنيف جديد</option>
+</select>
+
+<input id="newFileType" placeholder="اكتب التصنيف الجديد" style="display:none">
+
+<input id="filePerson" placeholder="اسم الشخص">
+
+<input id="fileNumber" placeholder="رقم الملف">
+
+<!-- حقول خاصة بالاستدعاء -->
+<div id="summonsFields" class="conditional-fields">
+<select id="summonsCallType">
+<option value="استدعاء">استدعاء</option>
+<option value="استدعاء بأمر">استدعاء بأمر</option>
+</select>
+<input id="summonsPhone" placeholder="رقم الهاتف (اختياري)">
+</div>
+
+<!-- حقول الملف العادي -->
+<div id="genericFileFields" class="conditional-fields show">
+<input id="fileTitle" placeholder="عنوان الملف">
+<input id="receivedDate" type="date">
+<input id="receivedFrom" placeholder="استلمته من">
+</div>
+
+<textarea id="fileNotes" rows="3" placeholder="ملاحظات"></textarea>
+
+<button class="addBtn" onclick="saveFile()">
+<i class="fas fa-save"></i>
+حفظ الملف
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="fileDetails">
+
+<div class="files-header">
+<button class="new-file-btn" onclick="show('pieces')">
+<i class="fas fa-arrow-right"></i>
+</button>
+<h3>تفاصيل الملف</h3>
+</div>
+
+<div class="file-info-card">
+<h2 id="detailsTitle">...</h2>
+<div id="fileInformation"></div>
+</div>
+
+<button class="add-main-btn" onclick="toggleActionForm()">
+<i class="fas fa-plus"></i>
+</button>
+
+<div id="actionForm" class="add-section">
+
+<h3>إضافة إجراء</h3>
+
+<input id="actionTitle" placeholder="عنوان الإجراء">
+
+<textarea id="actionNotes" placeholder="الملاحظات"></textarea>
+
+<input id="actionDate" type="date">
+
+<button class="addBtn" onclick="saveAction()">
+<i class="fas fa-save"></i>
+حفظ
+</button>
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress-header">
+<span id="progressText">0 / 0</span>
+</div>
+
+<div class="progress-bg">
+<div id="progressBar" class="progress-fill"></div>
+</div>
+
+</div>
+
+<h3 style="margin-top:25px">سجل الإجراءات</h3>
+
+<div id="actionsList"></div>
+
+</section>
+
+<section id="info" class="leave-section">
+
+    <!-- تبويبات فروع الإجازات -->
+    <div class="leave-tabs">
+        <button class="tab-btn active" onclick="switchLeaveTab('leaveCalc', this)" title="حاسبة الإجازة">
+            <i class="fas fa-calculator"></i>
+        </button>
+        <button class="tab-btn" onclick="switchLeaveTab('leaveArchive', this)" title="أرشيف الإجازات">
+            <i class="fas fa-calendar-alt"></i>
+        </button>
+        <button class="tab-btn" onclick="switchLeaveTab('leaveMissions', this)" title="المهام والتكليفات">
+            <i class="fas fa-route"></i>
+        </button>
+        <button class="tab-btn" onclick="switchLeaveTab('leaveMaintenance', this)" title="صيانة السيارة">
+            <i class="fas fa-oil-can"></i>
+        </button>
+        <button class="tab-btn" onclick="switchLeaveTab('leaveDuty', this)" title="جدول المناوبة">
+            <i class="fas fa-user-shield"></i>
+        </button>
+    </div>
+
+    <!-- ==================== 1. حاسبة الإجازة ==================== -->
+    <div id="leaveCalc-tab" class="leave-tab-content active">
+        <h3><i class="fas fa-calculator"></i> حساب الإجازة</h3>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+            <button id="calcTypeFuture" class="tab-btn" style="flex:1; background:#1a237e; color:white;" onclick="setCalcType('future')">إضافة أيام</button>
+            <button id="calcTypePast" class="tab-btn" style="flex:1; background:#ddd; color:#333;" onclick="setCalcType('past')">الأيام المنقضية</button>
+            <button id="calcTypeRemaining" class="tab-btn" style="flex:1; background:#ddd; color:#333;" onclick="setCalcType('remaining')">بين تاريخين</button>
+        </div>
+
+        <!-- قسم إضافة الأيام (الإجازة القادمة) -->
+        <div id="futureCalc" style="display: block;">
+            <select id="leaveType" onchange="updateLeaveTypeField()">
+                <option value="45">إجازة 45 يوم</option>
+                <option value="75">إجازة 75 يوم</option>
+                <option value="90">إجازة 90 يوم</option>
+                <option value="custom">مدة مخصصة</option>
+            </select>
+            <div id="customDaysField" class="conditional-fields">
+                <input type="number" id="customDays" placeholder="عدد الأيام">
+            </div>
+            <input type="date" id="startDate">
+            <button class="addBtn" onclick="calcFuture()">
+                <i class="fas fa-calculator"></i> احسب التاريخ
+            </button>
+        </div>
+
+        <!-- قسم حساب الأيام المنقضية -->
+        <div id="pastCalc" style="display: none;">
+            <input type="date" id="pastDate" placeholder="اختر تاريخ قديم">
+            <button class="addBtn" onclick="calcDaysPassed()">
+                <i class="fas fa-clock"></i> احسب الأيام المنقضية
+            </button>
+        </div>
+
+        <!-- قسم حساب الفرق بين تاريخين (بدون أي قيود) -->
+        <div id="remainingCalc" style="display: none;">
+            <input type="date" id="rangeStartDate" placeholder="تاريخ البداية">
+            <input type="date" id="rangeEndDate" placeholder="تاريخ النهاية">
+            <button class="addBtn" onclick="calcDateRange()">
+                <i class="fas fa-calculator"></i> احسب الفرق بين التاريخين
+            </button>
+        </div>
+
+        <h2 id="result" style="text-align:center; font-size:20px;"></h2>
+    </div>
+
+    <!-- ==================== 2. أرشيف الإجازات ==================== -->
+    <div id="leaveArchive-tab" class="leave-tab-content">
+
+        <div class="files-header">
+            <h3><i class="fas fa-calendar-alt"></i> أرشيف الإجازات</h3>
+            <button class="new-file-btn" onclick="toggleLeaveEventForm()" title="إضافة حدث">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <div class="leave-legend">
+            <span><i class="fas fa-circle leave-dot-regular"></i> إجازة عادية</span>
+            <span><i class="fas fa-circle leave-dot-exceptional"></i> إجازة استثنائية</span>
+            <span><i class="fas fa-circle leave-dot-vacation"></i> عطلة سنوية</span>
+        </div>
+
+        <div id="leaveArchiveList">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+
+        <!-- نموذج إضافة / تعديل حدث إجازة -->
+        <div id="addLeaveEventSection" class="add-section">
+            <h4><i class="fas fa-plus"></i> إضافة حدث إجازة</h4>
+
+            <select id="leaveEventType" class="classification-select" onchange="updateLeaveEventFields()">
+                <option value="">اختر النوع</option>
+                <option value="regular">🔵 إجازة عادية</option>
+                <option value="exceptional">🟢 إجازة استثنائية</option>
+                <option value="vacation">🟠 عطلة سنوية</option>
+            </select>
+
+            <div id="regularEventFields" class="conditional-fields">
+                <input type="date" id="regStartDate" placeholder="تاريخ البداية">
+                <input type="date" id="regEndDate" placeholder="تاريخ النهاية">
+                <select id="regCycle">
+                    <option value="75">دورة 75 يوم</option>
+                    <option value="90">دورة 90 يوم</option>
+                </select>
+                <textarea id="regNotes" placeholder="ملاحظات (اختياري)"></textarea>
+            </div>
+
+            <div id="exceptionalEventFields" class="conditional-fields">
+                <input type="date" id="excDate" placeholder="التاريخ">
+                <select id="excType">
+                    <option value="مرض">مرض</option>
+                    <option value="وفاة">وفاة</option>
+                    <option value="مناسبة عائلية">مناسبة عائلية</option>
+                    <option value="مكافأة">مكافأة</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
+                <textarea id="excNotes" placeholder="ملاحظات (اختياري)"></textarea>
+            </div>
+
+            <div id="vacationEventFields" class="conditional-fields">
+                <input type="date" id="vacDate" placeholder="التاريخ">
+                <textarea id="vacNotes" placeholder="ملاحظات (اختياري)"></textarea>
+            </div>
+
+            <button class="addBtn" onclick="saveLeaveEvent()">
+                <i class="fas fa-save"></i> حفظ
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 3. المهام والتكليفات ==================== -->
+    <div id="leaveMissions-tab" class="leave-tab-content">
+
+        <div class="files-header">
+            <h3><i class="fas fa-route"></i> المهام والتكليفات</h3>
+            <button class="new-file-btn" onclick="toggleMissionForm()" title="إضافة">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <div id="addMissionSection" class="add-section">
+            <select id="missionKind" onchange="updateMissionFields()">
+                <option value="mission">مهمة</option>
+                <option value="assignment">تكليف</option>
+            </select>
+            <input type="date" id="missionDate">
+            <input id="missionTitle" placeholder="اسم المهمة أو المكان">
+            <textarea id="missionNotes" placeholder="ملاحظات (اختياري)"></textarea>
+            <button class="addBtn" onclick="saveMission()">
+                <i class="fas fa-save"></i> حفظ
+            </button>
+        </div>
+
+        <div id="missionsList" class="leave-list">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+    </div>
+
+    <!-- ==================== 4. صيانة السيارة ==================== -->
+    <div id="leaveMaintenance-tab" class="leave-tab-content">
+
+        <div class="files-header">
+            <h3><i class="fas fa-oil-can"></i> صيانة السيارة</h3>
+            <button class="new-file-btn" onclick="toggleMaintenanceForm()" title="إضافة">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <div id="addMaintenanceSection" class="add-section">
+            <input type="date" id="maintDate">
+            <input type="number" id="maintOdometer" placeholder="عداد السيارة (كم)">
+            <input id="maintType" placeholder="نوع الصيانة">
+            <input id="maintOilType" placeholder="نوع الزيت">
+            <input id="maintOilQty" placeholder="كمية الزيت">
+            <label class="checkbox-row show">
+                <input type="checkbox" id="maintFilter">
+                <span>تم تغيير الفلتر</span>
+            </label>
+            <input type="number" id="maintInterval" placeholder="الفاصل القادم (كم)">
+            <button class="addBtn" onclick="saveMaintenance()">
+                <i class="fas fa-save"></i> حفظ
+            </button>
+        </div>
+
+        <div id="maintenanceList" class="leave-list">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+    </div>
+
+    <!-- ==================== 5. جدول المناوبة ==================== -->
+    <div id="leaveDuty-tab" class="leave-tab-content">
+
+        <div class="files-header">
+            <h3><i class="fas fa-user-shield"></i> جدول المناوبة</h3>
+        </div>
+
+        <div class="duty-quick-buttons">
+            <button class="duty-btn duty-guard" onclick="quickDuty('حراسة')">
+                <i class="fas fa-shield-alt"></i> حراسة
+            </button>
+            <button class="duty-btn duty-security" onclick="quickDuty('خفارة')">
+                <i class="fas fa-user-shield"></i> خفارة
+            </button>
+            <button class="duty-btn duty-rest" onclick="quickDuty('راحة')">
+                <i class="fas fa-bed"></i> راحة
+            </button>
+        </div>
+
+        <button class="new-file-btn" onclick="toggleDutyForm()" style="margin:15px auto; display:block;" title="إدخال يدوي">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <div id="addDutySection" class="add-section">
+            <h4><i class="fas fa-pen"></i> إدخال يدوي</h4>
+            <input type="date" id="dutyDate">
+            <select id="dutyType">
+                <option value="حراسة">حراسة</option>
+                <option value="خفارة">خفارة</option>
+                <option value="راحة">راحة</option>
+            </select>
+            <textarea id="dutyNotes" placeholder="ملاحظات (اختياري)"></textarea>
+            <button class="addBtn" onclick="saveDutyManual()">
+                <i class="fas fa-save"></i> حفظ
+            </button>
+        </div>
+
+        <button class="archiveToggle" onclick="toggleArchive('dutyArchive')">
+            <i class="fas fa-eye"></i> عرض السجل
+        </button>
+        <div id="dutyArchive" class="archive">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        </div>
+    </div>
+
+</section>
+
+
+</div>
+<!-- نهاية appContent -->
+
+<script type="module" src="js/dateFormat.js"></script>
+<script type="module" src="js/theme.js"></script>
+<script type="module" src="js/firebase-config.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/ui.js"></script>
+<script type="module" src="js/app.js"></script>
+<script type="module" src="js/dashboard.js"></script>
+<script type="module" src="js/infractions.js"></script>
+<script type="module" src="js/leave.js"></script>
+<script type="module" src="js/leaveArchive.js"></script>
+<script type="module" src="js/leaveMissions.js"></script>
+<script type="module" src="js/leaveMaintenance.js"></script>
+<script type="module" src="js/leaveDuty.js"></script>
+<script type="module" src="js/pieces.js"></script>
+<script type="module" src="js/statistics.js"></script>
+<script type="module" src="js/notifications.js"></script>
+<script type="module" src="js/search.js"></script>
+
+
+
+
+<script>
+/* =========================================================
+   SAMOO — تحديث الأيقونة النشطة في شريط التنقل
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const navButtons = document.querySelectorAll("nav button");
+
+    navButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            /* إزالة النشاط من جميع الأزرار */
+            navButtons.forEach(function (btn) {
+                btn.classList.remove("active");
+            });
+
+            /* تفعيل الزر الذي تم الضغط عليه */
+            this.classList.add("active");
+
+        });
+
+    });
+
+    /* Dashboard هو القسم الافتراضي عند فتح التطبيق */
+    const dashboardButton = document.querySelector(
+        'nav button[onclick*="dashboard"]'
+    );
+
+    if (dashboardButton) {
+        dashboardButton.classList.add("active");
+    }
+
+});
+</script>
+
+
+</body>
+</html>
