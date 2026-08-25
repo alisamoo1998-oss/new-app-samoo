@@ -1,7 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
 import {
-    getFirestore,
+    initializeFirestore,
+    persistentLocalCache,
+    persistentSingleTabManager,
     collection,
     addDoc,
     onSnapshot,
@@ -12,7 +14,6 @@ import {
     orderBy,
     where,
     getDocs
-
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -26,7 +27,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
+// تفعيل التخزين المحلي الدائم لـ Firestore
+const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+        tabManager: persistentSingleTabManager()
+    })
+});
 
 export {
     app,
