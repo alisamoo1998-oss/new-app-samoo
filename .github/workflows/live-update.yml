@@ -1,0 +1,63 @@
+﻿name: Samoo Live Update
+
+on:
+  push:
+    branches:
+      - capacitor-samoo
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: samoo-live-update
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Capacitor web bundle
+        run: npm run capacitor-build -- --config vite.config.capacitor.js
+
+      - name: Prepare update bundle
+        shell: bash
+        run: |
+          set -e
+          BUNDLE_ID="${GITHUB_SHA:0:12}"
+          mkdir -p site/bundles
+          (cd www && zip -qr "../site/bundles/${BUNDLE_ID}.zip" .)
+          cat > site/latest.json <<EOF
+          {
+            "bundleId": "${BUNDLE_ID}",
+            "url": "https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/bundles/${BUNDLE_ID}.zip"
+          }
+          EOF
+          cat site/latest.json
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
