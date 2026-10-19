@@ -22,7 +22,6 @@ window.login = async () => {
 
     try {
         await signInWithEmailAndPassword(auth, email, password);
-
         // إعادة تحميل الصفحة لضمان تحميل البيانات بشكل صحيح بعد الدخول
         location.reload();
     } catch (err) {

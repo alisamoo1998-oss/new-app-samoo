@@ -333,3 +333,56 @@
     padding:8px 10px;
     border-radius:8px;
 }
+
+/* Compact duty and general maintenance, using the existing theme. */
+.duty-summary{ padding:0 0 12px; border-bottom:1px solid var(--c-border); }
+.duty-summary h4,.duty-records-title{ margin:10px 0; color:var(--c-text); font-size:14px; }
+.duty-stats-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+.duty-stats-grid div{ padding:8px 0; min-width:0; }
+.duty-stats-grid span{ display:block; color:var(--c-text-muted); font-size:12px; line-height:1.6; }
+.duty-stats-grid b{ display:block; color:var(--c-text); font-size:17px; margin-top:3px; }
+.duty-stats-grid div:nth-child(n+5){ grid-column:span 1; }
+#leaveDuty-tab .duty-quick-buttons{ flex-direction:row; gap:8px; }
+#leaveDuty-tab .duty-btn{ padding:12px 4px; border-radius:8px; box-shadow:none; font-size:13px; gap:5px; color:var(--c-header-text); }
+#leaveDuty-tab .duty-btn i{ font-size:18px; }
+#leaveDuty-tab .duty-guard{ background:var(--c-info); }
+#leaveDuty-tab .duty-security{ background:var(--c-primary); }
+#leaveDuty-tab .duty-rest{ background:var(--c-success); }
+.duty-records{ display:flex; flex-direction:column; gap:6px; }
+.record-row{ display:flex; align-items:center; gap:8px; padding:9px 10px; background:var(--c-card); color:var(--c-text); border-radius:8px; border-right:3px solid var(--c-border); }
+.record-row.duty-record-hirasa{ border-right-color:var(--c-success); }
+.record-row.duty-record-khafara{ border-right-color:var(--c-info); }
+.record-row.duty-record-raha{ border-right-color:var(--c-warning); }
+.record-main{ flex:1; min-width:0; }
+.record-heading{ display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:4px 12px; color:var(--c-text); font-size:14px; font-weight:bold; overflow-wrap:anywhere; }
+.record-heading time{ font-size:12px; color:var(--c-text-muted); font-weight:normal; white-space:nowrap; }
+.record-heading i{ margin-left:4px; }
+.record-note{ color:var(--c-text-muted); font-size:12px; line-height:1.6; margin-top:4px; overflow-wrap:anywhere; white-space:pre-wrap; }
+.record-action{ display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; flex-shrink:0; padding:0; border:1px solid var(--c-border); border-radius:8px; background:var(--c-input-bg); color:var(--c-text); cursor:pointer; }
+.record-row .delete-btn{ background:transparent; }
+.record-pagination{ display:flex; justify-content:center; align-items:center; gap:16px; margin:14px 0; color:var(--c-text-muted); font-size:13px; }
+.record-pagination:empty{ display:none; }
+.record-action:disabled,.maintenance-actions button:disabled{ opacity:.45; cursor:default; }
+.maintenance-views{ display:flex; gap:8px; margin:12px 0; }
+.maintenance-views .tab-btn{ flex:1; border:1px solid var(--c-border); border-radius:8px; padding:10px 8px; font-size:14px; transform:none; box-shadow:none; gap:5px; min-height:44px; }
+.maintenance-views .tab-btn.active{ background:var(--c-primary); color:var(--c-header-text); }
+.maintenance-views span{ margin-right:6px; }
+.maintenance-record{ border:1px solid var(--c-border); background:var(--c-card); border-radius:8px; padding:12px; }
+.maintenance-meta{ display:flex; gap:4px 16px; flex-wrap:wrap; margin-top:7px; color:var(--c-text-muted); font-size:12px; line-height:1.7; }
+.maintenance-actions{ display:flex; align-items:center; flex-wrap:wrap; gap:6px; border-top:1px solid var(--c-border); padding-top:8px; margin-top:8px; }
+.maintenance-status{ flex:1; font-size:12px; color:var(--c-text-muted); }
+.maintenance-actions .edit-btn{ color:var(--c-text); background:var(--c-input-bg); font-size:12px; border-radius:8px; }
+.maintenance-actions .edit-btn i{ color:inherit; }
+.maintenance-form label{ display:block; text-align:right; font-size:13px; color:var(--c-text-muted); margin:8px 0 3px; }
+.maintenance-form input,.maintenance-form textarea{ box-sizing:border-box; width:100%; }
+.maintenance-form .checkbox-row{ display:flex; align-items:center; gap:8px; }
+.maintenance-form .checkbox-row input{ width:auto; }
+.maintenance-oil{ margin:10px 0; padding:10px 0; border-top:1px solid var(--c-border); color:var(--c-text-muted); font-size:13px; }
+.maintenance-oil summary{ cursor:pointer; }
+@media(max-width:600px){
+    .duty-stats-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .duty-stats-grid div:last-child{ grid-column:span 2; }
+}
+@media(prefers-reduced-motion:reduce){
+    #leaveDuty-tab *,#leaveMaintenance-tab *{ animation:none; transition:none; }
+}

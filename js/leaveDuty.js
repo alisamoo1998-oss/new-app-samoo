@@ -1,4 +1,5 @@
 import { fmtDate } from "./dateFormat.js";
+import { averageGapDays, recordYear, pageRecords, escapeHtml } from "./leaveRecords.js";
 import { db, collection, addDoc, onSnapshot, doc, deleteDoc, query, orderBy } from "./firebase-config.js";
 
 const dutyCollection = collection(db, "duty_schedule");
@@ -67,38 +68,18 @@ window.deleteDuty = async (id) => {
     }
 };
 
-// --- متوسط عدد الأيام بين تكرارات نفس النوع (بترتيب زمني تصاعدي) ---
-function averageGapDays(dateList) {
-    if (dateList.length < 2) return null;
-
-    const sorted = [...dateList].sort((a, b) => new Date(a) - new Date(b));
-    let totalGap = 0;
-
-    for (let i = 1; i < sorted.length; i++) {
-        totalGap += Math.floor((new Date(sorted[i]) - new Date(sorted[i - 1])) / (1000 * 60 * 60 * 24));
-    }
-
-    return Math.round(totalGap / (sorted.length - 1));
-}
-
 // --- بناء بطاقة سجل مناوبة واحد ---
 function buildDutyCard(d, id) {
     const cssClass = DUTY_CSS_CLASS[d.dutyType] || "";
 
     return `
-        <div class="leave-item-card ${cssClass}">
-            <div class="leave-item-header">
-                <span class="leave-item-kind"><i class="fas ${DUTY_ICONS[d.dutyType] || "fa-user-shield"}"></i> ${d.dutyType || ""}</span>
-                <span class="leave-item-date">${fmtDate(d.date)}</span>
+        <div class="record-row ${cssClass}">
+            <div class="record-main">
+                <div class="record-heading"><span><i class="fas ${DUTY_ICONS[d.dutyType] || "fa-user-shield"}"></i> ${escapeHtml(d.dutyType)}</span><time dir="ltr">${fmtDate(d.date)}</time></div>
+                ${d.notes ? `<div class="record-note">${escapeHtml(d.notes)}</div>` : ""}
             </div>
-            ${d.notes ? `<div class="leave-item-notes">${d.notes}</div>` : ""}
-            <div class="leave-item-actions">
-                <button class="delete-btn" onclick="deleteDuty('${id}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    `;
+            <button class="delete-btn record-action" title="حذف المناوبة" aria-label="حذف المناوبة" onclick="deleteDuty('${escapeHtml(id)}')"><i class="fas fa-trash"></i></button>
+        </div>`;
 }
 
 // --- بناء صندوق إحصائيات نهاية السنة ---
@@ -107,12 +88,12 @@ function buildYearStatsBox(yearRecords) {
     const hirasaDates = yearRecords.filter(r => r.dutyType === "حراسة").map(r => r.date);
     const rahaDates = yearRecords.filter(r => r.dutyType === "راحة").map(r => r.date);
 
-    const fmtAvg = (avg) => avg === null ? "-" : `${avg} يوم`;
+    const fmtAvg = (avg) => avg === null ? "غير متاح" : `${avg} يوم`;
 
     return `
-        <div class="year-stats-box">
-            <h4><i class="fas fa-chart-bar"></i> إحصائيات السنة</h4>
-            <div class="year-stats-grid">
+        <div class="duty-summary">
+            <h4><i class="fas fa-chart-bar"></i> إحصائيات ${selectedYear}</h4>
+            <div class="duty-stats-grid">
                 <div><span>عدد الخفارات</span><b>${khafaraDates.length}</b></div>
                 <div><span>عدد الحراسات</span><b>${hirasaDates.length}</b></div>
                 <div><span>عدد أيام الراحة</span><b>${rahaDates.length}</b></div>
@@ -125,39 +106,33 @@ function buildYearStatsBox(yearRecords) {
     `;
 }
 
-// --- الاستماع للبيانات وعرض الأرشيف مجمّعاً حسب السنة ---
+let records = [];
+let selectedYear = "";
+let currentPage = 1;
+
+window.selectDutyYear = year => { selectedYear = String(year); currentPage = 1; renderDuty(); };
+window.changeDutyPage = step => { currentPage += step; renderDuty(); };
+
+function renderDuty() {
+    const years = [...new Set(records.map(r => recordYear(r.date)).filter(Boolean))].sort().reverse();
+    if (!years.includes(selectedYear)) selectedYear = years[0] || "";
+    document.getElementById("dutyYearFilter").innerHTML = years.map(year =>
+        `<button class="leave-year-btn ${year === selectedYear ? "active" : ""}" aria-pressed="${year === selectedYear}" onclick="selectDutyYear('${year}')">${year}</button>`).join("");
+    const yearRecords = records.filter(r => recordYear(r.date) === selectedYear);
+    document.getElementById("dutyStats").innerHTML = selectedYear ? buildYearStatsBox(yearRecords) : '<div class="loading">لا توجد سجلات مناوبة</div>';
+    const result = pageRecords(yearRecords, currentPage);
+    currentPage = result.current;
+    document.getElementById("dutyArchive").innerHTML = result.rows.map(r => buildDutyCard(r, r.id)).join("") || '<div class="loading">لا توجد سجلات</div>';
+    document.getElementById("dutyPagination").innerHTML = result.pages > 1 ? `
+        <button class="record-action" title="السابق" aria-label="السابق" onclick="changeDutyPage(-1)" ${currentPage === 1 ? "disabled" : ""}><i class="fas fa-chevron-right"></i></button>
+        <span>${currentPage} / ${result.pages} · ${yearRecords.length} سجل</span>
+        <button class="record-action" title="التالي" aria-label="التالي" onclick="changeDutyPage(1)" ${currentPage === result.pages ? "disabled" : ""}><i class="fas fa-chevron-left"></i></button>` : "";
+}
+
 const q = query(dutyCollection, orderBy("date", "desc"));
-
 onSnapshot(q, snapshot => {
-    const archive = document.getElementById("dutyArchive");
-
-    if (snapshot.empty) {
-        archive.innerHTML = `<div class="loading"><i class="fas fa-user-shield"></i> لا توجد سجلات</div>`;
-        return;
-    }
-
-    const records = [];
-    snapshot.forEach(docSnap => {
-        records.push({ id: docSnap.id, ...docSnap.data() });
-    });
-
-    const years = [...new Set(records.map(r => new Date(r.date).getFullYear()))].sort((a, b) => b - a);
-
-    let html = "";
-
-    years.forEach(year => {
-        const yearRecords = records.filter(r => new Date(r.date).getFullYear() === year);
-
-        html += `
-            <div class="year-group">
-                <h3 class="year-group-title"><i class="fas fa-calendar"></i> سنة ${year}</h3>
-                <div class="leave-list">
-                    ${yearRecords.map(r => buildDutyCard(r, r.id)).join("")}
-                </div>
-                ${buildYearStatsBox(yearRecords)}
-            </div>
-        `;
-    });
-
-    archive.innerHTML = html;
+    records = snapshot.docs.map(s => ({ ...s.data(), id: s.id }));
+    renderDuty();
+}, () => {
+    document.getElementById("dutyStats").innerHTML = '<div class="loading">تعذر تحميل المناوبات، يرجى إعادة المحاولة.</div>';
 });

@@ -631,31 +631,40 @@
     <div id="leaveMaintenance-tab" class="leave-tab-content">
 
         <div class="files-header">
-            <h3><i class="fas fa-oil-can"></i> صيانة السيارة</h3>
+            <h3><i class="fas fa-wrench"></i> صيانة السيارة</h3>
             <button class="new-file-btn" onclick="toggleMaintenanceForm()" title="إضافة">
                 <i class="fas fa-plus"></i>
             </button>
         </div>
 
-        <div id="addMaintenanceSection" class="add-section">
+        <div id="addMaintenanceSection" class="add-section maintenance-form">
+            <h4><i class="fas fa-wrench"></i> إضافة صيانة</h4>
+            <label for="maintDate">التاريخ</label>
             <input type="date" id="maintDate">
-            <input type="number" id="maintOdometer" placeholder="عداد السيارة (كم)">
-            <input id="maintType" placeholder="نوع الصيانة">
-            <input id="maintOilType" placeholder="نوع الزيت">
-            <input id="maintOilQty" placeholder="كمية الزيت">
-            <label class="checkbox-row show">
-                <input type="checkbox" id="maintFilter">
-                <span>تم تغيير الفلتر</span>
-            </label>
-            <input type="number" id="maintInterval" placeholder="الفاصل القادم (كم)">
-            <button class="addBtn" onclick="saveMaintenance()">
-                <i class="fas fa-save"></i> حفظ
-            </button>
+            <label for="maintType">نوع الصيانة</label>
+            <input id="maintType" placeholder="إصلاح، استبدال، فحص…">
+            <label for="maintPart">القطعة أو النظام (اختياري)</label>
+            <input id="maintPart" placeholder="الفرامل، البطارية، الإطارات…">
+            <label for="maintOdometer">عداد السيارة (كم، اختياري)</label>
+            <input type="number" min="0" id="maintOdometer">
+            <label for="maintInterval">الفاصل القادم (كم، اختياري)</label>
+            <input type="number" min="0" id="maintInterval">
+            <label for="maintNotes">ملاحظات (اختياري)</label>
+            <textarea id="maintNotes" rows="2"></textarea>
+            <details id="maintOilDetails" class="maintenance-oil">
+                <summary>تفاصيل الزيت والفلتر (اختياري)</summary>
+                <input id="maintOilType" placeholder="نوع الزيت" aria-label="نوع الزيت">
+                <input id="maintOilQty" placeholder="كمية الزيت" aria-label="كمية الزيت">
+                <label class="checkbox-row show"><input type="checkbox" id="maintFilter"><span>تم تغيير الفلتر</span></label>
+            </details>
+            <button id="maintSave" class="addBtn" onclick="saveMaintenance()"><i class="fas fa-save"></i> حفظ</button>
         </div>
-
-        <div id="maintenanceList" class="leave-list">
-            <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+        <div class="maintenance-views" aria-label="حالة الصيانة">
+            <button id="maintView-ongoing" class="tab-btn active" aria-pressed="true" onclick="selectMaintenanceView('ongoing')"><i class="fas fa-wrench"></i> الجاري <span id="maintCount-ongoing">0</span></button>
+            <button id="maintView-completed" class="tab-btn" aria-pressed="false" onclick="selectMaintenanceView('completed')"><i class="fas fa-box-archive"></i> الأرشيف <span id="maintCount-completed">0</span></button>
         </div>
+        <div id="maintenanceList" class="leave-list"><div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div></div>
+        <div id="maintenancePagination" class="record-pagination"></div>
     </div>
 
     <!-- ==================== 5. جدول المناوبة ==================== -->
@@ -665,6 +674,8 @@
             <h3><i class="fas fa-user-shield"></i> جدول المناوبة</h3>
         </div>
 
+        <div id="dutyYearFilter" class="leave-year-filter" aria-label="سنة المناوبات"></div>
+        <div id="dutyStats" aria-live="polite"><div class="loading">جاري التحميل...</div></div>
         <div class="duty-quick-buttons">
             <button class="duty-btn duty-guard" onclick="quickDuty('حراسة')">
                 <i class="fas fa-shield-alt"></i> حراسة
@@ -695,12 +706,11 @@
             </button>
         </div>
 
-        <button class="archiveToggle" onclick="toggleArchive('dutyArchive')">
-            <i class="fas fa-eye"></i> عرض السجل
-        </button>
-        <div id="dutyArchive" class="archive">
+        <h4 class="duty-records-title"><i class="fas fa-list"></i> سجل المناوبات</h4>
+        <div id="dutyArchive" class="duty-records">
             <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
         </div>
+        <div id="dutyPagination" class="record-pagination"></div>
     </div>
 
 </section>
